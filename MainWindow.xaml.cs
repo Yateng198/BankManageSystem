@@ -22,7 +22,7 @@ namespace BankManageSystem
     public partial class MainWindow : Window
     {
         SqlConnection con;
-        SqlCommand cmd;
+        SqlCommand cmd, cmd1;
         SqlDataReader reader;
         public MainWindow()
         {
@@ -40,24 +40,47 @@ namespace BankManageSystem
 
         private void login_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("You are connected!");
-            cmd = new SqlCommand("select count(1) from customerTable where Email = @email and Password = @Pwd", con);
-            cmd.CommandType = System.Data.CommandType.Text;
-            cmd.Parameters.AddWithValue("@email", email.Text);
-            cmd.Parameters.AddWithValue("@Pwd", txtpwd.Password);
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-            if(count == 1)
+            try
             {
-                MyAccount myAccount= new MyAccount();   
-                myAccount.Show();
-                this.Close();
-            }
-            else
+                cmd = new SqlCommand("select count(1) from customerTable where Email = @email and Password = @Pwd COLLATE SQL_Latin1_General_CP1_CS_AS", con);
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.Parameters.AddWithValue("@email", email.Text);
+                cmd.Parameters.AddWithValue("@Pwd", txtpwd.Password);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                if (count == 1)
+                {
+                    cmd1 = new SqlCommand("select FName, LName, DateOfBirth, Country, PhoneNumber, Email from customerTable where email = @email",con);
+                    cmd1.Parameters.AddWithValue("@email", email.Text);
+                    reader = cmd1.ExecuteReader();
+                    MyAccount myAccount = new MyAccount();
+                    while (reader.Read())
+                    {
+                        myAccount.username.Content = reader.GetValue(0).ToString() + " " + reader.GetValue(1).ToString();
+                        myAccount.userage.Content = reader.GetValue(2).ToString();
+                        myAccount.usercountry.Content= reader.GetValue(3).ToString();
+                        myAccount.userphonenumber.Content= reader.GetValue(4).ToString();
+                        myAccount.usercardnumber.Content = "TBD";
+                        myAccount.amount.Content = "TBD";
+                        myAccount.useremail.Content = reader.GetValue(5).ToString();
+                    }
+                    myAccount.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Please Check Your Email & Password, and Try Again!");
+                }
+            }catch (SqlException ex)
             {
-                MessageBox.Show("Please Check Your Email & Password, and Try Again!");
+                MessageBox.Show(ex.Message);
             }
            
 
+        }
+
+        private void exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

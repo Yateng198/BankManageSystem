@@ -23,5 +23,7 @@ namespace BankManageSystem
         {
             InitializeComponent();
         }
+
+       
     }
 }
