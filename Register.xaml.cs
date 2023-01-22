@@ -47,7 +47,11 @@ namespace BankManageSystem
                 cmd.Parameters.AddWithValue("@Password", pwd.Password);
                 //we now need to excute our qury
                 cmd.ExecuteNonQuery();
-                MessageBox.Show("Registe Successfully!");
+                MessageBox.Show("Registe Successfully, click ok go back to log in page!");
+                MainWindow mainWindow= new MainWindow();
+                mainWindow.email.Text = this.email.Text;
+                this.Close();
+                mainWindow.Show();
                 con.Close();
             }
             catch (SqlException ex)
