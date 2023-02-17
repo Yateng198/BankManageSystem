@@ -27,7 +27,7 @@ namespace BankManageSystem
         public MainWindow()
         {
             InitializeComponent();
-            con = new SqlConnection("Data Source=desktop-1ahtenp\\mssqlserver01;Initial Catalog=BankManageSystem;Integrated Security=True;Pooling=False");
+            con = new SqlConnection("Data Source=LAPTOP-DT6BMRBG;Initial Catalog=final;Integrated Security=True");
             con.Open();
         }
 
@@ -76,6 +76,13 @@ namespace BankManageSystem
             }
            
 
+        }
+
+        private void exchange_Click(object sender, RoutedEventArgs e)
+        {
+            Exchange ex = new Exchange();
+            ex.Show();
+            this.Close();
         }
 
         private void exit_Click(object sender, RoutedEventArgs e)

@@ -1,0 +1,53 @@
+﻿<Window x:Class="BankManageSystem.Exchange"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BankManageSystem"
+        mc:Ignorable="d"
+        Title="Exchange" Height="450" Width="800">
+    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        <Label Content="Today's Currency" HorizontalAlignment="Center" Margin="0,11,0,0" VerticalAlignment="Top" Width="170" FontWeight="Bold" FontSize="18"/>
+        <Label Content="CAD" HorizontalAlignment="Left" Margin="148,77,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <TextBox Margin="221,78,318,0" TextWrapping="Wrap" Text="Please input the amount you wanna exchange" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <Label Content="CAD" HorizontalAlignment="Left" Margin="148,77,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <TextBox x:Name="cad_amount" Margin="221,78,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <Label Content="AUD" HorizontalAlignment="Left" Margin="147,287,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label Content="JPY" HorizontalAlignment="Left" Margin="148,244,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label Content="CNY" HorizontalAlignment="Left" Margin="148,201,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label Content="EUR" HorizontalAlignment="Left" Margin="147,157,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label Content="USD" HorizontalAlignment="Left" Margin="148,117,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label Content="Please choose the currency you want to exchange" HorizontalAlignment="Left" Margin="216,45,0,0" VerticalAlignment="Top" Width="290" FontSize="11"/>
+        <Label Content="MXN" HorizontalAlignment="Left" Margin="147,329,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label Content="Canadian Dollar $" HorizontalAlignment="Left" Margin="500,80,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <Label Content="Australia Dollar $" HorizontalAlignment="Left" Margin="500,290,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <Label Content="Japanese Yen ¥" HorizontalAlignment="Left" Margin="500,246,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <Label Content="Chinese Yuan ¥" HorizontalAlignment="Left" Margin="499,206,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <Label Content="Euro €" HorizontalAlignment="Left" Margin="500,163,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <Label Content="US Dollar $" HorizontalAlignment="Left" Margin="500,122,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <Label Content="Mexican Peso $" HorizontalAlignment="Left" Margin="500,331,0,0" VerticalAlignment="Top" Width="111" FontSize="11"/>
+        <TextBox x:Name="mxn_amount" Margin="221,331,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="aud_amount" Margin="221,289,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="jpy_amount" Margin="221,247,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="cny_amount" Margin="221,205,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="eur_amount" Margin="221,161,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="28" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="usd_amount" Margin="221,120,318,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="27" TextChanged="TextBox_TextChanged"/>
+        <Button x:Name="cad_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,80,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_cad"/>
+        <Button x:Name="aud_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,290,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_aud"/>
+        <Button x:Name="jpy_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,249,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_jpy"/>
+        <Button x:Name="cny_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,207,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_cny"/>
+        <Button x:Name="eur_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,163,0,0" VerticalAlignment="Top" Width="90" Height="26" FontWeight="Bold" Background="#FFF4CF56" Click="Button_eur"/>
+        <Button x:Name="usd_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,122,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_usd"/>
+        <Button x:Name="mxn_cvt" Content="Convert" HorizontalAlignment="Left" Margin="616,333,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_mxn"/>
+        <Button x:Name="clear" Content="Clear and Restart" HorizontalAlignment="Left" Margin="221,376,0,0" VerticalAlignment="Top" Height="24" Width="137" Click="Button_clear"/>
+        <Button x:Name="go_back" Content="Go back to main menu" HorizontalAlignment="Left" Margin="569,376,0,0" VerticalAlignment="Top" Height="24" Width="137" Click="Button_go_back"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,79,0,0" VerticalAlignment="Top" Width="25" Source="images/Image1.png"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,331,0,0" VerticalAlignment="Top" Width="25" Source="/images/Image7.png"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,290,0,0" VerticalAlignment="Top" Width="25" Source="/images/Image6.png"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,247,0,0" VerticalAlignment="Top" Width="26" Source="/images/Image5.png"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,206,0,0" VerticalAlignment="Top" Width="25" Source="/images/Image4.png"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,161,0,0" VerticalAlignment="Top" Width="25" Source="/images/Image3.png"/>
+        <Image HorizontalAlignment="Left" Height="25" Margin="99,121,0,0" VerticalAlignment="Top" Width="25" Source="/images/Image2.png"/>
+
+    </Grid>
+</Window>

@@ -33,7 +33,7 @@
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="exchange" Content="ExChange" HorizontalAlignment="Left" Margin="574,102,0,0" VerticalAlignment="Top" FontSize="16" Width="177" Height="50" UseLayoutRounding="False" Background="{x:Null}">
+        <Button x:Name="exchange" Content="ExChange" HorizontalAlignment="Left" Margin="574,102,0,0" VerticalAlignment="Top" FontSize="16" Width="177" Height="50" UseLayoutRounding="False" Background="{x:Null}" Click="exchange_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
