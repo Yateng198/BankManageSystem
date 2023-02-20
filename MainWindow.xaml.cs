@@ -27,7 +27,7 @@ namespace BankManageSystem
         public MainWindow()
         {
             InitializeComponent();
-            con = new SqlConnection("Data Source=LAPTOP-DT6BMRBG;Initial Catalog=final;Integrated Security=True");
+            con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
             con.Open();
         }
 
