@@ -42,7 +42,7 @@ namespace BankManageSystem
         {
             try
             {
-                cmd = new SqlCommand("select count(1) from customerTable where Email = @email and Password = @Pwd COLLATE SQL_Latin1_General_CP1_CS_AS", con);
+                cmd = new SqlCommand("select count(1) from UserInfo where Email = @email and Password = @Pwd COLLATE SQL_Latin1_General_CP1_CS_AS", con);
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@email", email.Text);
                 cmd.Parameters.AddWithValue("@Pwd", txtpwd.Password);
