@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,8 +23,8 @@ namespace BankManageSystem
     public partial class MainWindow : Window
     {
         SqlConnection con;
-        SqlCommand cmd, cmd1;
-        SqlDataReader reader;
+        SqlCommand cmd, cmd1, cmd2;
+        SqlDataReader userInfoReader, userAccountReader;
         public MainWindow()
         {
             InitializeComponent();
@@ -42,29 +43,51 @@ namespace BankManageSystem
         {
             try
             {
+                string password = txtpwd.Password.ToString();
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+                byte[] hashBytes;
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    hashBytes = sha256.ComputeHash(passwordBytes);
+                }
+                string hashedPassword = Convert.ToBase64String(hashBytes);
                 cmd = new SqlCommand("select count(1) from UserInfo where Email = @email and Password = @Pwd COLLATE SQL_Latin1_General_CP1_CS_AS", con);
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@email", email.Text);
-                cmd.Parameters.AddWithValue("@Pwd", txtpwd.Password);
+                cmd.Parameters.AddWithValue("@Pwd", hashedPassword);
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count == 1)
                 {
-                    cmd1 = new SqlCommand("select AccountNumber, FName, LName, DateOfBirth, Country, PhoneNumber, Email from customerTable where email = @email", con);
+                    cmd1 = new SqlCommand("select UserId, F_Name, L_Name, Date_Of_Birth, Address_Country, Mobile, Email from UserInfo where email = @email", con);
                     cmd1.Parameters.AddWithValue("@email", email.Text);
-                    reader = cmd1.ExecuteReader();
+                    userInfoReader = cmd1.ExecuteReader();
+
+                    int logInUserId = 0;
+
                     MyAccount myAccount = new MyAccount();
-                    while (reader.Read())
+                    while (userInfoReader.Read())
                     {
-                        myAccount.username.Content = reader.GetValue(1).ToString() + " " + reader.GetValue(2).ToString();
-                        myAccount.userage.Content = Convert.ToDateTime(reader.GetValue(3).ToString().Substring(0, 4) + "-" + reader.GetValue(3).ToString().Substring(5, 2) + "-" + reader.GetValue(3).ToString().Substring(8, 2));
-                        myAccount.usercountry.Content= reader.GetValue(4).ToString();
-                        myAccount.userphonenumber.Content= reader.GetValue(5).ToString();
-                        myAccount.usercardnumber.Content = reader.GetValue(0).ToString();
-                        myAccount.amount.Content = "TBD";
-                        //myAccount.useremail.Content = "TBD";
-                        myAccount.useremail.Content = reader.GetValue(6).ToString();
+                        logInUserId = (int)userInfoReader.GetValue(0);
+                        myAccount.username.Text = userInfoReader.GetValue(1).ToString() + " " + userInfoReader.GetValue(2).ToString();
+                        DateTime dateTime = (DateTime)userInfoReader.GetValue(3);
+                        myAccount.userage.Text = dateTime.Date.ToString("d");
+
+                        //  myAccount.userage.Content = userInfoReader.GetValue(3).ToString();
+                        myAccount.usercountry.Text = userInfoReader.GetValue(4).ToString();
+                        myAccount.userphonenumber.Text = userInfoReader.GetValue(5).ToString();
+                        myAccount.useremail.Text = userInfoReader.GetValue(6).ToString();
 
                     }
+                    userInfoReader.Close();
+                    cmd2 = new SqlCommand("select CardNumber, Balance from UserAccount where UserId = @id", con);
+                    cmd2.Parameters.AddWithValue("@id", logInUserId);
+                    userAccountReader = cmd2.ExecuteReader();
+                    while (userAccountReader.Read())
+                    {
+                        myAccount.usercardnumber.Text = userAccountReader.GetValue(0).ToString();
+                        myAccount.amount.Text = userAccountReader.GetValue(1).ToString() + " $";
+                    }
+                    userAccountReader.Close();
                     myAccount.Show();
                     this.Close();
                 }
@@ -76,19 +99,21 @@ namespace BankManageSystem
             {
                 MessageBox.Show(ex.Message);
             }
-           
+
 
         }
 
         private void exchange_Click(object sender, RoutedEventArgs e)
         {
             Exchange ex = new Exchange();
+            con.Close();
             ex.Show();
             this.Close();
         }
 
         private void exit_Click(object sender, RoutedEventArgs e)
         {
+            con.Close();
             this.Close();
         }
     }

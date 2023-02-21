@@ -59,7 +59,7 @@ namespace BankManageSystem
                 else
                 {
                     string newPwd = pwd.Password.ToString();
-                    string pattern = @"^(?=.*[a-z].*[a-z])(?=.*[A-Z].*[A-Z])(?=.*\d.*\d)(?=.*[^a-zA-Z0-9].*[^a-zA-Z0-9]).{8,}$";
+                    string pattern = @"^(?=.*[a-z].*[a-z])(?=.*[A-Z].*[A-Z])(?=.*\d.*\d)(?=.*[^a-zA-Z0-9].*[^a-zA-Z0-9]).{8,15}$";
                     Regex regex = new Regex(pattern);
                     if (regex.IsMatch(newPwd))
                     {
@@ -75,7 +75,8 @@ namespace BankManageSystem
                         // Password meets the criteria
                         string qury = "INSERT INTO UserInfo OUTPUT INSERTED.UserId values(@Password, @FName, @LName, @Dob, @Email, @PhoneNumber, @occupation, @street, @city, @province, @country, @postalcode)";
                         SqlCommand cmd = new SqlCommand(qury, con);
-                        cmd.Parameters.AddWithValue("@FName", fname.Text);//We need to call the textbox by name to grab the text in it
+                        //We need to call the textbox by name to grab the text in it
+                        cmd.Parameters.AddWithValue("@FName", fname.Text);
                         cmd.Parameters.AddWithValue("@LName", lname.Text);
                         cmd.Parameters.AddWithValue("@Dob", dobPicker.SelectedDate.Value.Date);
                         cmd.Parameters.AddWithValue("@Country", country.Text);
