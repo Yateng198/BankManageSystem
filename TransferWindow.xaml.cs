@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,6 +31,10 @@ namespace BankManageSystem
         string lastName;
         public string loggedUserEmail { get; set; }
         public float currenBalance;
+
+        float senderNewAmount;
+        long senderCardNumber;
+        int loggedUserId;
 
 
 
@@ -72,7 +77,7 @@ namespace BankManageSystem
                                 if (count == 1)
                                 {
                                     cmd = new SqlCommand("select UserId, F_Name, L_Name from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                                    //cmd.CommandType = System.Data.CommandType.Text;
+                                   
                                     cmd.Parameters.AddWithValue("@email", input);
                                     SqlDataReader reader = cmd.ExecuteReader();
                                     while (reader.Read())
@@ -139,19 +144,17 @@ namespace BankManageSystem
                         if (input != "" && long.TryParse(input, out long accNum))
                         {
                             cmd = new SqlCommand("select UserId from UserAccount where CardNumber = @cardnumber", con);
-                            // cmd.CommandType = System.Data.CommandType.Text;
                             cmd.Parameters.AddWithValue("@cardnumber", input);
                             var checkID = cmd.ExecuteScalar();
                             if (checkID != null)
                             {
                                 try
                                 {
-                                    //userId = Convert.ToInt32(cmd.ExecuteScalar());
                                     userId = (int)cmd.ExecuteScalar();
                                     if (userId != 0)
                                     {
                                         cmd = new SqlCommand("select F_Name, L_Name from UserInfo where UserId = @userid", con);
-                                        //cmd.CommandType = System.Data.CommandType.Text;
+                                    
                                         cmd.Parameters.AddWithValue("@userid", userId);
                                         SqlDataReader reader = cmd.ExecuteReader();
                                         while (reader.Read())
@@ -226,8 +229,8 @@ namespace BankManageSystem
                     //update senders balance to database
                     cmd = new SqlCommand("Select UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
                     cmd.Parameters.AddWithValue("@email", loggedUserEmail);
-                    int loggedUserId = (int)cmd.ExecuteScalar();
-                    float senderNewAmount = currenBalance - transferAmount;
+                    loggedUserId = (int)cmd.ExecuteScalar();
+                    senderNewAmount = currenBalance - transferAmount;
                     cmd1 = new SqlCommand("UPDATE UserAccount SET Balance = @newBalance WHERE UserId = @ID", con);
                     cmd1.Parameters.AddWithValue("@newBalance", senderNewAmount);
                     cmd1.Parameters.AddWithValue("@ID", loggedUserId);
@@ -244,7 +247,7 @@ namespace BankManageSystem
                     cmd.Parameters.AddWithValue("@senderId", loggedUserId);
                     cmd.Parameters.AddWithValue("@receiverId", userId);
                     SqlDataReader reader = cmd.ExecuteReader();
-                    long senderCardNumber = 0;
+                    senderCardNumber = 0;
                     long receiverCardNumber = 0;
                     while (reader.Read())
                     {
@@ -295,7 +298,20 @@ namespace BankManageSystem
                     {
                         // Close this window, show the myAccount window and update the balance to the textblock named amount
                         MyAccount myAccount = new MyAccount();
-                        myAccount.amount.Text = balance.Text;
+                        myAccount.amount.Text = senderNewAmount.ToString() + "$";
+                        myAccount.useremail.Text = loggedUserEmail;
+                        myAccount.usercardnumber.Text = senderCardNumber.ToString();
+                        cmd = new SqlCommand("select F_Name, L_Name, Date_Of_Birth, Mobile, Address_Country from UserInfo where UserId = @id ", con);
+                        cmd.Parameters.AddWithValue("@id", loggedUserId);
+                        reader= await cmd.ExecuteReaderAsync();
+                        while (reader.Read())
+                        {
+                            myAccount.username.Text = reader.GetString(0) + " " + reader.GetString(1);
+                            myAccount.userage.Text = reader.GetDateTime(2).ToString("yyyy-MM-dd");
+                            myAccount.userphonenumber.Text = reader.GetString(3);
+                            myAccount.usercountry.Text = reader.GetString(4);
+                        }
+                        reader.Close();
                         myAccount.Show();
                         this.Close();
                     }
@@ -310,18 +326,39 @@ namespace BankManageSystem
             con.Close();
         }
 
-
-
-
-
-
-
-        private void cancel_Click(object sender, RoutedEventArgs e)
+        private async void cancel_Click(object sender, RoutedEventArgs e)
         {
-            MyAccount account = new MyAccount();
-            account.Show();
+            con.Open();
+            // Close this window, show the myAccount window and update the balance to the textblock named amount
+            MyAccount myAccount = new MyAccount();
+
+           
+            cmd = new SqlCommand("select F_Name, L_Name, Date_Of_Birth, Mobile, Address_Country, UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS ", con);
+            cmd.Parameters.AddWithValue("@email", loggedUserEmail);
+            SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            while (reader.Read())
+            {
+                myAccount.username.Text = reader.GetString(0) + " " + reader.GetString(1);
+                myAccount.userage.Text = reader.GetDateTime(2).ToString("yyyy-MM-dd");
+                myAccount.userphonenumber.Text = reader.GetString(3);
+                myAccount.usercountry.Text = reader.GetString(4);
+                loggedUserId = reader.GetInt32(5);
+            }
+            reader.Close();
+            cmd = new SqlCommand("select CardNumber, Balance from UserAccount where UserId = @id", con);
+            cmd.Parameters.AddWithValue("@id", loggedUserId);
+            reader = await cmd.ExecuteReaderAsync();
+            while (reader.Read())
+            {
+                myAccount.usercardnumber.Text = reader.GetInt64(0).ToString();
+                myAccount.amount.Text = reader.GetDouble(1).ToString() + "$";
+
+            }
+            reader.Close();
+            myAccount.useremail.Text = loggedUserEmail;
+            myAccount.Show();
             this.Close();
-            con.Close();
+            con.Close() ;
         }
     }
 }

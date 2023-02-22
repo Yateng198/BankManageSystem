@@ -37,7 +37,7 @@
             </Button.Resources>
         </Button>
         <TextBlock HorizontalAlignment="Left" Margin="207,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold"><Run Language="en-ca" Text="By Account Number:"/></TextBlock>
-        <TextBlock x:Name="summary" HorizontalAlignment="Center" Margin="0,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Height="63" Width="576" FontSize="16" FontFamily="Cascadia Code SemiBold" Text="You are making a transfer of amount xxx to xxx, Confirm or Cancel back to previous menu" TextAlignment="Center"/>
+        <TextBlock x:Name="summary" HorizontalAlignment="Center" Margin="0,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Height="63" Width="576" FontSize="16" FontFamily="Cascadia Code SemiBold" TextAlignment="Center"/>
         <Button x:Name="confirmButton" Content="Confirm" HorizontalAlignment="Left" Margin="217,350,0,0" Background="{x:Null}" VerticalAlignment="Top" Width="159" FontSize="16" FontFamily="Bahnschrift SemiBold" Click="confirmButton_Click" >
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">

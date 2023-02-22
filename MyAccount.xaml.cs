@@ -1,6 +1,8 @@
 ﻿
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -30,20 +32,20 @@ namespace BankManageSystem
         {
             InitializeComponent();
             con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
-            con.Open();
+            
         }
 
         private void Transfer_Click(object sender, RoutedEventArgs e)
         {
             TransferWindow transferWindow = new TransferWindow(useremail.Text);
             transferWindow.balance.Text = amount.Text;
-          //  transferWindow.loggedUserEmail.Text = useremail.Text;
             transferWindow.Show();
             this.Close();
         }
 
-        private void deposit_Click(object sender, RoutedEventArgs e)
+        private async void deposit_Click(object sender, RoutedEventArgs e)
         {
+            con.Open();
             InputDialog inputDialog = new InputDialog("Please enter the deposit amount:", "Amount");
             string input = "";
             if (inputDialog.ShowDialog() == true)
@@ -64,25 +66,45 @@ namespace BankManageSystem
                     cmd.ExecuteNonQuery();
 
                     // Retrieve the new balance value from the database
-                    query = "SELECT Balance FROM UserAccount WHERE CardNumber = @accountNumber";
+                    query = "SELECT UserId, Balance FROM UserAccount WHERE CardNumber = @accountNumber";
                     cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
-                    var newAmount = cmd.ExecuteScalar().ToString();
-                    amount.Text= newAmount + "$";
+                    SqlDataReader reader =await cmd.ExecuteReaderAsync();
+                    int loggedUserId = 0;
+                    double newAmount = 0;
+                    while (reader.Read())
+                    {
+                        loggedUserId = reader.GetInt32(0);
+                        newAmount = reader.GetDouble(1);
+                    }
+                    reader.Close();
+                    amount.Text= newAmount.ToString() + "$";
                     MessageBox.Show($"You have deposited {depositAmount:C} Successfully!");
+
+                    //Update deposit record into database
+                    cmd = new SqlCommand("Insert into UserTransaction values (@userid, @cardNum, @type, @time, @amount)", con);
+                    DateTime currentDateTime = DateTime.Now;
+                    cmd.Parameters.AddWithValue("@userid", loggedUserId.ToString());
+                    cmd.Parameters.AddWithValue("@cardNum", usercardnumber.Text);
+                    cmd.Parameters.AddWithValue("@type", "Deposit");
+                    cmd.Parameters.AddWithValue("@time", currentDateTime);
+                    cmd.Parameters.AddWithValue("@amount", depositAmount);
+                    await cmd.ExecuteNonQueryAsync();
+                    con.Close();
                 }
                 else
                 {
                     // If the amount is not valid, display an error message
                     MessageBox.Show("Please enter a valid deposit amount and try again!");
+                    con.Close();
                 }
             }
+            con.Close();
         }
 
-        private void withdrawal_Click(object sender, RoutedEventArgs e)
+        private async void withdrawal_Click(object sender, RoutedEventArgs e)
         {
-            // string input = Microsoft.VisualBasic.Interaction.InputBox("Please enter the withdrawal amount:", "Deposit", "Enter your withdrawal amount please");
-
+            con.Open();
             InputDialog inputDialog = new InputDialog("Please enter the withdrawal amount:", "Amount");
             string input = "";
             if (inputDialog.ShowDialog() == true)
@@ -111,27 +133,51 @@ namespace BankManageSystem
                         cmd = new SqlCommand(updateQuery, con);
                         cmd.Parameters.AddWithValue("@windrawalAmount", input);
                         cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
 
-                        // Retrieve the new balance value from the database
-                        string balanceQuery = "SELECT Balance FROM UserAccount WHERE CardNumber = @accountNumber";
-                        cmd = new SqlCommand(balanceQuery, con);
+                     //   Retrieve the new balance value from the database
+                        string query = "SELECT UserId, Balance FROM UserAccount WHERE CardNumber = @accountNumber";
+                        cmd = new SqlCommand(query, con);
                         cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
-                        var newAmount = cmd.ExecuteScalar().ToString();
-                        amount.Text = newAmount + "$";
-                        MessageBox.Show($"You have windrawaled {withdrawalAmount:C} Successfully!");
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                        int loggedUserId = 0;
+                        double newAmount = 0;
+                        while (reader.Read())
+                        {
+                            loggedUserId = reader.GetInt32(0);
+                            newAmount = reader.GetDouble(1);
+                        }
+                        reader.Close();
+                        amount.Text = newAmount.ToString() + "$";
+                        MessageBox.Show($"You have deposited {withdrawalAmount:C} Successfully!");
+
+                        //Update deposit record into database
+                        cmd = new SqlCommand("Insert into UserTransaction values (@userid, @cardNum, @type, @time, @amount)", con);
+                        DateTime currentDateTime = DateTime.Now;
+                        cmd.Parameters.AddWithValue("@userid", loggedUserId.ToString());
+                        cmd.Parameters.AddWithValue("@cardNum", usercardnumber.Text);
+                        cmd.Parameters.AddWithValue("@type", "Withdrawal");
+                        cmd.Parameters.AddWithValue("@time", currentDateTime);
+                        cmd.Parameters.AddWithValue("@amount", withdrawalAmount);
+                        await cmd.ExecuteNonQueryAsync();
+                        con.Close();
+
+
                     }
                     else
                     {
                         MessageBox.Show("Sorry you don't have enough amount on your account for this withdrawal!");
+                        con.Close();
                     }
                 }
                 else
                 {
                     // If the amount is not valid, display an error message
                     MessageBox.Show("Please enter a valid withdrawal amount and try again!");
+                    con.Close();
                 }
             }
+            con.Close();
         }
 
 
