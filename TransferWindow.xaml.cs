@@ -203,7 +203,7 @@ namespace BankManageSystem
                 MessageBox.Show("Enter a valide amount first please!");
                 con.Close();
             }
-            
+
         }
         private async void confirmButton_Click(object sender, RoutedEventArgs e)
         {
@@ -211,6 +211,7 @@ namespace BankManageSystem
             if(userId == 0)
             {
                 MessageBox.Show("Click on \"Email Address\" or \"Account Number\" to enter receiver infomation please!");
+                con.Close();
             }
             else
             {
@@ -313,13 +314,16 @@ namespace BankManageSystem
                         }
                         reader.Close();
                         myAccount.Show();
+                        con.Close();
                         this.Close();
+                        
                     }
 
                 }
                 else
                 {
                     MessageBox.Show("Enter the amount you want transfer please!");
+                    con.Close();
                 }
 
             }

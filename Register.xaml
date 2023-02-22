@@ -14,13 +14,13 @@
                 </Style>
             </Button.Resources>
         </Button>
-        <Label Content="              First Name" HorizontalAlignment="Left" Margin="60,101,0,0" VerticalAlignment="Top" Width="150"/>
-        <Label Content="      Last Name" HorizontalAlignment="Left" Margin="376,102,0,0" VerticalAlignment="Top" Width="112"/>
+        <Label x:Name="fnamelabel" Content="              First Name" HorizontalAlignment="Left" Margin="60,101,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="lnamelabel" Content="      Last Name" HorizontalAlignment="Left" Margin="376,102,0,0" VerticalAlignment="Top" Width="112"/>
         <Label Content="  Date Of Birth" HorizontalAlignment="Left" Margin="376,134,0,0" VerticalAlignment="Top" Width="112"/>
         <Label Content="&#x9;    Country" HorizontalAlignment="Left" Margin="60,197,0,0" VerticalAlignment="Top" Width="150"/>
-        <Label Content="       Phone Number" HorizontalAlignment="Left" Margin="60,260,0,0" VerticalAlignment="Top" Width="150"/>
-        <Label Content="                       Email" HorizontalAlignment="Left" Margin="60,324,0,0" VerticalAlignment="Top" Width="150"/>
-        <Label Content="        Password" HorizontalAlignment="Left" Margin="376,323,0,0" VerticalAlignment="Top" Width="112"/>
+        <Label x:Name="mobilelabel" Content="       Phone Number" HorizontalAlignment="Left" Margin="60,260,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="emaillabel" Content="                       Email" HorizontalAlignment="Left" Margin="60,324,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="pwdlabel" Content="        Password" HorizontalAlignment="Left" Margin="376,323,0,0" VerticalAlignment="Top" Width="112"/>
         <TextBox x:Name="email" HorizontalAlignment="Left" Margin="190,326,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="166">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
@@ -106,7 +106,7 @@
                 </Style>
             </TextBox.Resources>
         </TextBox>
-        <Label Content="     PostalCode" HorizontalAlignment="Left" Margin="376,259,0,0" VerticalAlignment="Top" Width="112"/>
+        <Label x:Name="postalcodelabel" Content="     PostalCode" HorizontalAlignment="Left" Margin="376,259,0,0" VerticalAlignment="Top" Width="112"/>
         <TextBox x:Name="postalcode" HorizontalAlignment="Left" Margin="476,267,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="166">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">

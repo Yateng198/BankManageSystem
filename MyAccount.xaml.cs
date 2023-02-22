@@ -43,6 +43,12 @@ namespace BankManageSystem
             this.Close();
         }
 
+        private void exit_Click(object sender, RoutedEventArgs e)
+        {
+            
+            this.Close();
+        }
+
         private async void deposit_Click(object sender, RoutedEventArgs e)
         {
             con.Open();
