@@ -38,13 +38,13 @@ namespace BankManageSystem
             loggedUserEmail = userEmail;
             InitializeComponent();
             con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
-            con.Open();
         }
 
         private void emailButton_Click(object sender, RoutedEventArgs e)
         {
+            con.Open();
             currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
-            if (!amountTranfer.Text.Equals("") && float.TryParse(amountTranfer.Text, out float transferAmount) && transferAmount > 0)
+            if (!amountTransfer.Text.Equals("") && float.TryParse(amountTransfer.Text, out float transferAmount) && transferAmount > 0)
             {
                 if (transferAmount > currenBalance)
                 {
@@ -82,13 +82,15 @@ namespace BankManageSystem
                                         lastName = reader.GetString(2);
                                     }
                                     reader.Close();
-                                    summary.Text = "You are Making a Tranfer of Amount: " + amountTranfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
+                                    summary.Text = "You are Making a Tranfer of Amount: " + amountTransfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
                                                    "\r\nConfirm or Cancel?";
+                                    con.Close();
 
                                 }
                                 else
                                 {
                                     MessageBox.Show("No user found! Check the email entered and try again please");
+                                    con.Close();
                                 }
                             }
 
@@ -96,15 +98,21 @@ namespace BankManageSystem
                         else
                         {
                             MessageBox.Show("Please enter a valide Email Address and try again!");
+                            con.Close();
                         }
                     }
+                    else
+                    {
+                        con.Close();
+                    }
                 }
-
+               
 
             }
             else
             {
                 MessageBox.Show("Enter a valide amount first please!");
+                con.Close();
             }
 
         }
@@ -113,8 +121,9 @@ namespace BankManageSystem
 
         private void accountNumberButton_Click(object sender, RoutedEventArgs e)
         {
+            con.Open();
             currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
-            if (!amountTranfer.Text.Equals("") && float.TryParse(amountTranfer.Text, out float transferAmount) && transferAmount > 0)
+            if (!amountTransfer.Text.Equals("") && float.TryParse(amountTransfer.Text, out float transferAmount) && transferAmount > 0)
             {
                 if (transferAmount > currenBalance)
                 {
@@ -152,71 +161,153 @@ namespace BankManageSystem
                                         }
 
                                         reader.Close();
-                                        summary.Text = "You are Making a Tranfer of Amount: " + amountTranfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
+                                        summary.Text = "You are Making a Tranfer of Amount: " + amountTransfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
                                                        "\r\nConfirm or Cancel?";
-
+                                        con.Close();
                                     }
                                     else
                                     {
                                         MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
+                                        con.Close();
                                     }
                                 }
                                 catch (Exception ex)
                                 {
                                     MessageBox.Show("Please enter a valide EXCEPTION Account Number and try again!");
+                                    con.Close();
                                 }
                             }
                             else
                             {
                                 MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
+                                con.Close();
                             }
                         }
                         else
                         {
                             MessageBox.Show("Please enter a valide Account Number and try again!");
+                            con.Close();
                         }
+                    }
+                    else
+                    {
+                        con.Close();
                     }
                 }
             }
             else
             {
                 MessageBox.Show("Enter a valide amount first please!");
+                con.Close();
             }
+            
         }
         private async void confirmButton_Click(object sender, RoutedEventArgs e)
         {
-            cmd = new SqlCommand("select UserId from UserInfo where Email = @email", con);
-
-
-            currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
-            if(float.TryParse(amountTranfer.Text, out float transferAmount))
+            con.Open();
+            if(userId == 0)
             {
+                MessageBox.Show("Click on \"Email Address\" or \"Account Number\" to enter receiver infomation please!");
+            }
+            else
+            {
+                currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
+                if (float.TryParse(amountTransfer.Text, out float transferAmount) && amountTransfer.Text != "")
+                {
+                    //update receivers balance to database
+                    cmd2 = new SqlCommand("Select Balance from UserAccount where UserId = @ID", con);
+                    cmd2.Parameters.AddWithValue("@ID", userId);
+                    double receiverCurrentBalance = (double)cmd2.ExecuteScalar() + transferAmount;
+                    cmd = new SqlCommand("UPDATE UserAccount SET Balance = @balance WHERE UserId = @ID", con);
+                    cmd.Parameters.AddWithValue("@balance", receiverCurrentBalance);
+                    cmd.Parameters.AddWithValue("@ID", userId);
+                    await cmd.ExecuteNonQueryAsync();
 
-                cmd2 = new SqlCommand("Select Balance from UserAccount where UserId = @ID", con);
-                cmd2.Parameters.AddWithValue("@ID", userId);
-                double receiverCurrentBalance = (double)cmd2.ExecuteScalar() + transferAmount;
-                cmd = new SqlCommand("UPDATE UserAccount SET Balance = @balance WHERE UserId = @ID", con);
-                cmd.Parameters.AddWithValue("@balance", receiverCurrentBalance);
-                cmd.Parameters.AddWithValue("@ID", userId);
-                await cmd.ExecuteNonQueryAsync();
+                    //update senders balance to database
+                    cmd = new SqlCommand("Select UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
+                    cmd.Parameters.AddWithValue("@email", loggedUserEmail);
+                    int loggedUserId = (int)cmd.ExecuteScalar();
+                    float senderNewAmount = currenBalance - transferAmount;
+                    cmd1 = new SqlCommand("UPDATE UserAccount SET Balance = @newBalance WHERE UserId = @ID", con);
+                    cmd1.Parameters.AddWithValue("@newBalance", senderNewAmount);
+                    cmd1.Parameters.AddWithValue("@ID", loggedUserId);
+                    await cmd1.ExecuteNonQueryAsync();
+                    MessageBox.Show("Transfer " + transferAmount.ToString() + "$ to: " + firstName + " " + lastName + " Successful!");
+                    balance.Text = senderNewAmount.ToString() + "$";
 
-                cmd = new SqlCommand("Select UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                //float senderNewAmount = currenBalance - transferAmount;
-                cmd.Parameters.AddWithValue("@email", loggedUserEmail);
-                int loggedUserId = (int)cmd.ExecuteScalar();
-                float senderNewAmount = currenBalance - transferAmount;
-                cmd1 = new SqlCommand("UPDATE UserAccount SET Balance = @newBalance WHERE UserId = @ID",con);
-                cmd1.Parameters.AddWithValue("@newBalance", senderNewAmount);
-                cmd1.Parameters.AddWithValue("@ID", loggedUserId);
-                await cmd1.ExecuteNonQueryAsync();
-                MessageBox.Show("Transfer " + transferAmount.ToString() + "$ to: " + firstName + " " + lastName + " Successful!");
-                balance.Text = senderNewAmount.ToString() + "$";
+
+
+                    //save this transaction into dataase, for both sneder and receiver
+
+                    //Get sender's card number
+                    cmd = new SqlCommand("select CardNumber from UserAccount where UserId IN (@senderId, @receiverId)", con);
+                    cmd.Parameters.AddWithValue("@senderId", loggedUserId);
+                    cmd.Parameters.AddWithValue("@receiverId", userId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    long senderCardNumber = 0;
+                    long receiverCardNumber = 0;
+                    while (reader.Read())
+                    {
+                        string cardNumber = reader.GetValue(0).ToString();
+                        if (senderCardNumber == 0)
+                        {
+                            senderCardNumber = long.Parse(cardNumber);
+                        }
+                        else
+                        {
+                            receiverCardNumber = long.Parse(cardNumber);
+                        }
+
+                    }
+                    reader.Close();
+                    //Insert record into sender database
+                    cmd = new SqlCommand("insert into UserTransaction values (@userid, @CardNumber, @TransactionType, @TransactionTime, @TransactionAmount)", con);
+                    cmd.Parameters.AddWithValue("@userid", loggedUserId);
+                    cmd.Parameters.AddWithValue("@CardNumber", senderCardNumber);
+                    cmd.Parameters.AddWithValue("@TransactionType", "Transfer OUT");
+                    DateTime currrentDateTime = DateTime.Now;
+                    cmd.Parameters.AddWithValue("@TransactionTime", currrentDateTime);
+                    cmd.Parameters.AddWithValue("@TransactionAmount", transferAmount);
+                    await cmd.ExecuteNonQueryAsync();
+
+                    //Insert record into receiver database
+                    cmd = new SqlCommand("insert into UserTransaction values (@userid, @CardNumber, @TransactionType, @TransactionTime, @TransactionAmount)", con);
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    cmd.Parameters.AddWithValue("@CardNumber", receiverCardNumber);
+                    cmd.Parameters.AddWithValue("@TransactionType", "Transfer IN");
+                    cmd.Parameters.AddWithValue("@TransactionTime", currrentDateTime);
+                    cmd.Parameters.AddWithValue("@TransactionAmount", transferAmount);
+                    await cmd.ExecuteNonQueryAsync();
+
+
+
+                    MessageBoxResult result = MessageBox.Show("Do you want to make another transfer?", "Another Transfer?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // Update the balance displaying in this window, and clear the transfer amount
+                        balance.Text = senderNewAmount.ToString() + "$";
+                        amountTransfer.Text = "";
+                        userId = 0;
+
+                    }
+                    else
+                    {
+                        // Close this window, show the myAccount window and update the balance to the textblock named amount
+                        MyAccount myAccount = new MyAccount();
+                        myAccount.amount.Text = balance.Text;
+                        myAccount.Show();
+                        this.Close();
+                    }
+
+                }
+                else
+                {
+                    MessageBox.Show("Enter the amount you want transfer please!");
+                }
 
             }
-            
-            
-
-
+            con.Close();
         }
 
 

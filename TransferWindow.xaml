@@ -11,7 +11,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="230,100,0,0" TextWrapping="Wrap" Text="Your Current Balance: " VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold"/>
         <TextBlock x:Name="balance" HorizontalAlignment="Left" Margin="453,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold" Width="142"/>
         <TextBlock HorizontalAlignment="Left" Margin="198,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold"><Run Language="en-ca" Text="Amount to"/><Run Text=" Transfer:"/></TextBlock>
-        <TextBox x:Name="amountTranfer" HorizontalAlignment="Left" Margin="453,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" FontSize="16" FontFamily="Cascadia Code SemiBold">
+        <TextBox x:Name="amountTransfer" HorizontalAlignment="Left" Margin="453,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" FontSize="16" FontFamily="Cascadia Code SemiBold">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
