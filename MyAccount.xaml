@@ -7,38 +7,101 @@
         mc:Ignorable="d"
         Title="MyAccount" Height="450" Width="800">
     <Grid>
-        <Button x:Name="deposit" Content="Deposit" HorizontalAlignment="Left" Margin="539,44,0,0" VerticalAlignment="Top" FontSize="16" Height="41" Width="115" Click="deposit_Click">
+        <Button x:Name="deposit" Content="Deposit" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,68,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="deposit_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="wirdrawal" Content="Withdrawal" HorizontalAlignment="Left" Margin="539,122,0,0" VerticalAlignment="Top" FontSize="16" Height="41" Width="115">
+        <Button x:Name="withdrawal" Content="Withdrawal" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,129,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="withdrawal_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="Transfer" Content="Transfer" HorizontalAlignment="Left" Margin="539,0,0,0" VerticalAlignment="Center" FontSize="16" Height="41" Width="115">
+        <Button x:Name="Transfer" Content="Transfer" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,196,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="Transfer_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Label x:Name="useremail" Content="email" HorizontalAlignment="Left" Margin="40,27,0,0" VerticalAlignment="Top" FontSize="16" Width="171"/>
-        <Label x:Name="username" Content="username" HorizontalAlignment="Left" Margin="84,64,0,0" VerticalAlignment="Top" FontSize="16" Width="171" FontWeight="Bold"/>
-        <Label Content="Date Of Birth: " HorizontalAlignment="Left" Margin="84,104,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label x:Name="userage" Content="DOB" ContentStringFormat="yyy-MM-dd" HorizontalAlignment="Left" Margin="245,104,0,0" VerticalAlignment="Top" FontSize="16" Width="192" FontWeight="Bold"/>
-        <Label Content="Country:" HorizontalAlignment="Left" Margin="84,142,0,0" VerticalAlignment="Top" FontSize="16" Width="86"/>
-        <Label Content="Phone Number:" HorizontalAlignment="Left" Margin="84,174,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label Content="Card Number:" HorizontalAlignment="Left" Margin="84,210,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label Content="Amount:" HorizontalAlignment="Left" Margin="84,246,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label x:Name="amount" Content="amount" HorizontalAlignment="Left" Margin="245,250,0,0" VerticalAlignment="Top" FontSize="16" Width="192" FontWeight="Bold"/>
-        <Label x:Name="usercardnumber" Content="Cnumber" HorizontalAlignment="Left" Margin="245,214,0,0" VerticalAlignment="Top" FontSize="16" Width="192" FontWeight="Bold"/>
-        <Label x:Name="userphonenumber" Content="Pnumber" HorizontalAlignment="Left" Margin="245,178,0,0" VerticalAlignment="Top" FontSize="16" Width="192" FontWeight="Bold"/>
-        <Label x:Name="usercountry" Content="country" HorizontalAlignment="Left" Margin="245,142,0,0" VerticalAlignment="Top" FontSize="16" Width="192" FontWeight="Bold"/>
+        <Label Content="Date Of Birth: " HorizontalAlignment="Left" Margin="90,189,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <Label Content="Country:" HorizontalAlignment="Left" Margin="90,226,0,0" VerticalAlignment="Top" FontSize="16" Width="86"/>
+        <Label Content="Phone Number:" HorizontalAlignment="Left" Margin="90,258,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <Label Content="Card Number:" HorizontalAlignment="Left" Margin="90,295,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <Label Content="Balance:" HorizontalAlignment="Left" Margin="90,331,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <TextBlock x:Name="username" HorizontalAlignment="Left" Margin="97,153,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" FontSize="16">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock x:Name="useremail" HorizontalAlignment="Left" Margin="97,68,0,0" TextWrapping="Wrap" Text="Email" VerticalAlignment="Top" FontSize="16" Width="176">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock x:Name="userage" HorizontalAlignment="Left" Margin="251,193,0,0" TextWrapping="Wrap" Text="DOB" VerticalAlignment="Top" FontSize="16" Width="155">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock x:Name="usercountry" HorizontalAlignment="Left" Margin="251,231,0,0" TextWrapping="Wrap" Text="Country" VerticalAlignment="Top" FontSize="16" Width="155">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock x:Name="userphonenumber" HorizontalAlignment="Left" Margin="251,263,0,0" TextWrapping="Wrap" Text="Mobile" VerticalAlignment="Top" FontSize="16" Width="155">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock x:Name="usercardnumber" HorizontalAlignment="Left" Margin="251,300,0,0" TextWrapping="Wrap" Text="AccountNumber" VerticalAlignment="Top" FontSize="16" Width="155">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock x:Name="amount" HorizontalAlignment="Left" Margin="251,336,0,0" TextWrapping="Wrap" Text="Balance" VerticalAlignment="Top" FontSize="16" Width="160">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="97,117,0,0" Text="Welcom" VerticalAlignment="Top" FontStyle="Italic" FontSize="16" Width="120" TextAlignment="Justify" LineHeight="16" TextWrapping="Wrap" FontWeight="DemiBold"/>
+        <Button x:Name="list" Content="Transactions" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,260,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115">
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+        <Button x:Name="exit" Content="Exit" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,321,0,0" VerticalAlignment="Top" FontSize="16" Height="36" Width="115" IsDefault="True">
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
     </Grid>
 </Window>
+
+
+
+    
+    
