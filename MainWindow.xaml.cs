@@ -85,7 +85,7 @@ namespace BankManageSystem
                     while (userAccountReader.Read())
                     {
                         myAccount.usercardnumber.Text = userAccountReader.GetValue(0).ToString();
-                        myAccount.amount.Text = userAccountReader.GetValue(1).ToString() + " $";
+                        myAccount.amount.Text = userAccountReader.GetValue(1).ToString() + "$";
                     }
                     userAccountReader.Close();
                     myAccount.Show();

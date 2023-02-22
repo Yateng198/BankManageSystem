@@ -68,7 +68,7 @@ namespace BankManageSystem
                     cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
                     var newAmount = cmd.ExecuteScalar().ToString();
-                    amount.Text= newAmount + " $";
+                    amount.Text= newAmount + "$";
                     MessageBox.Show($"You have deposited {depositAmount:C} Successfully!");
                 }
                 else
@@ -118,7 +118,7 @@ namespace BankManageSystem
                         cmd = new SqlCommand(balanceQuery, con);
                         cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
                         var newAmount = cmd.ExecuteScalar().ToString();
-                        amount.Text = newAmount + " $";
+                        amount.Text = newAmount + "$";
                         MessageBox.Show($"You have windrawaled {withdrawalAmount:C} Successfully!");
                     }
                     else

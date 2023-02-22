@@ -9,7 +9,7 @@
     <Grid>
         <TextBlock HorizontalAlignment="Center" Margin="0,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Height="63" Width="668" TextAlignment="Center" FontSize="16" FontFamily="Cascadia Code SemiBold"><Run Text="Welcome to our Transfer System"/><LineBreak/><Run Text="You can transfer amount either through email address or account number"/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="230,100,0,0" TextWrapping="Wrap" Text="Your Current Balance: " VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold"/>
-        <TextBlock x:Name="balance" HorizontalAlignment="Left" Margin="453,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold" Text="Balance" Width="142"/>
+        <TextBlock x:Name="balance" HorizontalAlignment="Left" Margin="453,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold" Width="142"/>
         <TextBlock HorizontalAlignment="Left" Margin="198,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontFamily="Cascadia Code SemiBold"><Run Language="en-ca" Text="Amount to"/><Run Text=" Transfer:"/></TextBlock>
         <TextBox x:Name="amountTranfer" HorizontalAlignment="Left" Margin="453,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" FontSize="16" FontFamily="Cascadia Code SemiBold">
             <TextBox.Resources>

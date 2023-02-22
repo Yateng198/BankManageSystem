@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Converters;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -28,113 +29,58 @@ namespace BankManageSystem
         string firstName;
         string lastName;
         public string loggedUserEmail { get; set; }
+        public float currenBalance;
 
 
 
         public TransferWindow(string userEmail)
         {
-            loggedUserEmail= userEmail;
+            loggedUserEmail = userEmail;
             InitializeComponent();
             con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
             con.Open();
-            
         }
 
         private void emailButton_Click(object sender, RoutedEventArgs e)
         {
+            currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
             if (!amountTranfer.Text.Equals("") && float.TryParse(amountTranfer.Text, out float transferAmount) && transferAmount > 0)
             {
-                // string input = Microsoft.VisualBasic.Interaction.InputBox("Please enter the receiver Email Address:", "Email", "Email Address");
-                InputDialog inputDialog = new InputDialog("Please enter the receiver Email Address:", "Email");
-                string input = "";
-                if (inputDialog.ShowDialog() == true)
+                if (transferAmount > currenBalance)
                 {
-                    input = inputDialog.Answer;
-                    if (input != "")
+                    MessageBox.Show("We are sorry, but you don't have enough amount on you account for this transfer, try again please!");
+                }
+                else
+                {
+                    InputDialog inputDialog = new InputDialog("Please enter the receiver Email Address:", "Email");
+                    string input = "";
+                    if (inputDialog.ShowDialog() == true)
                     {
-                        if (input.Equals("Email"))
+                        input = inputDialog.Answer;
+                        if (input != "")
                         {
-                            MessageBox.Show("Please enter a valide Email Address and try again!");
-                        }
-                        else
-                        {
-                            cmd = new SqlCommand("select count(1) from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                            cmd.CommandType = System.Data.CommandType.Text;
-                            cmd.Parameters.AddWithValue("@email", input);
-                            int count = Convert.ToInt32(cmd.ExecuteScalar());
-                            if (count == 1)
+                            if (input.Equals("Email"))
                             {
-                                cmd = new SqlCommand("select UserId, F_Name, L_Name from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                                //cmd.CommandType = System.Data.CommandType.Text;
-                                cmd.Parameters.AddWithValue("@email", input);
-                                SqlDataReader reader = cmd.ExecuteReader();
-                                while (reader.Read())
-                                {
-                                    userId = reader.GetInt32(0);
-                                    firstName = reader.GetString(1);
-                                    lastName = reader.GetString(2);
-                                }
-                                reader.Close();
-                                summary.Text = "You are Making a Tranfer of Amount: " + amountTranfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
-                                               "\r\nConfirm or Cancel?";
-
+                                MessageBox.Show("Please enter a valide Email Address and try again!");
                             }
                             else
                             {
-                                MessageBox.Show("No user found! Check the email entered and try again please");
-                            }
-                        }
-                        
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please enter a valide Email Address and try again!");
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Enter a valide amount first please!");
-            }
-
-        }
-
-        
-
-        private void accountNumberButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!amountTranfer.Text.Equals("") && float.TryParse(amountTranfer.Text, out float transferAmount) && transferAmount > 0)
-            {
-                // string input = Microsoft.VisualBasic.Interaction.InputBox("Please enter the receiver Email Address:", "Email", "Email Address");
-                InputDialog inputDialog = new InputDialog("Please enter the receiver Account Number:", "Account Number");
-                string input = "";
-                if (inputDialog.ShowDialog() == true)
-                {
-                    input = inputDialog.Answer;
-                    if (input != "" && long.TryParse(input, out long accNum))
-                    {
-                        cmd = new SqlCommand("select UserId from UserAccount where CardNumber = @cardnumber", con);
-                       // cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.AddWithValue("@cardnumber", input);
-                        var checkID = cmd.ExecuteScalar();
-                        if(checkID != null)
-                        {
-                            try
-                            {
-                                //userId = Convert.ToInt32(cmd.ExecuteScalar());
-                                userId = (int)cmd.ExecuteScalar();
-                                if (userId != 0)
+                                cmd = new SqlCommand("select count(1) from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
+                                cmd.CommandType = System.Data.CommandType.Text;
+                                cmd.Parameters.AddWithValue("@email", input);
+                                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                                if (count == 1)
                                 {
-                                    cmd = new SqlCommand("select F_Name, L_Name from UserInfo where UserId = @userid", con);
+                                    cmd = new SqlCommand("select UserId, F_Name, L_Name from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
                                     //cmd.CommandType = System.Data.CommandType.Text;
-                                    cmd.Parameters.AddWithValue("@userid", userId);
+                                    cmd.Parameters.AddWithValue("@email", input);
                                     SqlDataReader reader = cmd.ExecuteReader();
                                     while (reader.Read())
                                     {
-                                        firstName = reader.GetString(0);
-                                        lastName = reader.GetString(1);
+                                        userId = reader.GetInt32(0);
+                                        firstName = reader.GetString(1);
+                                        lastName = reader.GetString(2);
                                     }
-
                                     reader.Close();
                                     summary.Text = "You are Making a Tranfer of Amount: " + amountTranfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
                                                    "\r\nConfirm or Cancel?";
@@ -142,25 +88,93 @@ namespace BankManageSystem
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
+                                    MessageBox.Show("No user found! Check the email entered and try again please");
                                 }
                             }
-                            catch (Exception ex)
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please enter a valide Email Address and try again!");
+                        }
+                    }
+                }
+
+
+            }
+            else
+            {
+                MessageBox.Show("Enter a valide amount first please!");
+            }
+
+        }
+
+
+
+        private void accountNumberButton_Click(object sender, RoutedEventArgs e)
+        {
+            currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
+            if (!amountTranfer.Text.Equals("") && float.TryParse(amountTranfer.Text, out float transferAmount) && transferAmount > 0)
+            {
+                if (transferAmount > currenBalance)
+                {
+                    MessageBox.Show("We are sorry, but you don't have enough amount on you account for this transfer, try again please!");
+                }
+                else
+                {
+                    InputDialog inputDialog = new InputDialog("Please enter the receiver Account Number:", "Account Number");
+                    string input = "";
+                    if (inputDialog.ShowDialog() == true)
+                    {
+                        input = inputDialog.Answer;
+                        if (input != "" && long.TryParse(input, out long accNum))
+                        {
+                            cmd = new SqlCommand("select UserId from UserAccount where CardNumber = @cardnumber", con);
+                            // cmd.CommandType = System.Data.CommandType.Text;
+                            cmd.Parameters.AddWithValue("@cardnumber", input);
+                            var checkID = cmd.ExecuteScalar();
+                            if (checkID != null)
                             {
-                                MessageBox.Show("Please enter a valide EXCEPTION Account Number and try again!");
+                                try
+                                {
+                                    //userId = Convert.ToInt32(cmd.ExecuteScalar());
+                                    userId = (int)cmd.ExecuteScalar();
+                                    if (userId != 0)
+                                    {
+                                        cmd = new SqlCommand("select F_Name, L_Name from UserInfo where UserId = @userid", con);
+                                        //cmd.CommandType = System.Data.CommandType.Text;
+                                        cmd.Parameters.AddWithValue("@userid", userId);
+                                        SqlDataReader reader = cmd.ExecuteReader();
+                                        while (reader.Read())
+                                        {
+                                            firstName = reader.GetString(0);
+                                            lastName = reader.GetString(1);
+                                        }
+
+                                        reader.Close();
+                                        summary.Text = "You are Making a Tranfer of Amount: " + amountTranfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
+                                                       "\r\nConfirm or Cancel?";
+
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("Please enter a valide EXCEPTION Account Number and try again!");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
                             }
                         }
                         else
                         {
-                            MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
+                            MessageBox.Show("Please enter a valide Account Number and try again!");
                         }
-                        
-                        
-                        
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please enter a valide Account Number and try again!");
                     }
                 }
             }
@@ -169,8 +183,39 @@ namespace BankManageSystem
                 MessageBox.Show("Enter a valide amount first please!");
             }
         }
-        private void confirmButton_Click(object sender, RoutedEventArgs e)
+        private async void confirmButton_Click(object sender, RoutedEventArgs e)
         {
+            cmd = new SqlCommand("select UserId from UserInfo where Email = @email", con);
+
+
+            currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
+            if(float.TryParse(amountTranfer.Text, out float transferAmount))
+            {
+
+                cmd2 = new SqlCommand("Select Balance from UserAccount where UserId = @ID", con);
+                cmd2.Parameters.AddWithValue("@ID", userId);
+                double receiverCurrentBalance = (double)cmd2.ExecuteScalar() + transferAmount;
+                cmd = new SqlCommand("UPDATE UserAccount SET Balance = @balance WHERE UserId = @ID", con);
+                cmd.Parameters.AddWithValue("@balance", receiverCurrentBalance);
+                cmd.Parameters.AddWithValue("@ID", userId);
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd = new SqlCommand("Select UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
+                //float senderNewAmount = currenBalance - transferAmount;
+                cmd.Parameters.AddWithValue("@email", loggedUserEmail);
+                int loggedUserId = (int)cmd.ExecuteScalar();
+                float senderNewAmount = currenBalance - transferAmount;
+                cmd1 = new SqlCommand("UPDATE UserAccount SET Balance = @newBalance WHERE UserId = @ID",con);
+                cmd1.Parameters.AddWithValue("@newBalance", senderNewAmount);
+                cmd1.Parameters.AddWithValue("@ID", loggedUserId);
+                await cmd1.ExecuteNonQueryAsync();
+                MessageBox.Show("Transfer " + transferAmount.ToString() + "$ to: " + firstName + " " + lastName + " Successful!");
+                balance.Text = senderNewAmount.ToString() + "$";
+
+            }
+            
+            
+
 
         }
 
