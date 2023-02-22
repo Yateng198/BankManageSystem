@@ -26,8 +26,6 @@ namespace BankManageSystem
         SqlConnection con;
         SqlCommand cmd, cmd1, cmd2;
 
-       
-
         public MyAccount()
         {
             InitializeComponent();
@@ -37,7 +35,9 @@ namespace BankManageSystem
 
         private void Transfer_Click(object sender, RoutedEventArgs e)
         {
-            TransferWindow transferWindow = new TransferWindow();
+            TransferWindow transferWindow = new TransferWindow(useremail.Text);
+            transferWindow.balance.Text = amount.Text;
+          //  transferWindow.loggedUserEmail.Text = useremail.Text;
             transferWindow.Show();
             this.Close();
         }

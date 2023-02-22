@@ -18,6 +18,8 @@ namespace BankManageSystem
     /// <summary>
     /// Interaction logic for TransferWindow.xaml
     /// </summary>
+    /// 
+
     public partial class TransferWindow : Window
     {
         SqlConnection con;
@@ -25,17 +27,18 @@ namespace BankManageSystem
         int userId;
         string firstName;
         string lastName;
+        public string loggedUserEmail { get; set; }
 
-       
 
-        public TransferWindow()
+
+        public TransferWindow(string userEmail)
         {
+            loggedUserEmail= userEmail;
             InitializeComponent();
             con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
             con.Open();
+            
         }
-
-        
 
         private void emailButton_Click(object sender, RoutedEventArgs e)
         {
@@ -95,6 +98,8 @@ namespace BankManageSystem
             }
 
         }
+
+        
 
         private void accountNumberButton_Click(object sender, RoutedEventArgs e)
         {
@@ -164,6 +169,16 @@ namespace BankManageSystem
                 MessageBox.Show("Enter a valide amount first please!");
             }
         }
+        private void confirmButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+
+
+
+
 
         private void cancel_Click(object sender, RoutedEventArgs e)
         {
