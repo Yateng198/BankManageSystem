@@ -64,34 +64,40 @@ namespace BankManageSystem
 
             string response = await responseMessage.Content.ReadAsStringAsync();
             UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
-
-
-            //Take out the product object from the Json response message object
+            //Take out the objects from the Json response message object
             UserInfo user = userInfoResponse.user;
             UserAccount account = userInfoResponse.accout;
             if (responseMessage.IsSuccessStatusCode)
             {
-                MyAccount myAccount  = new MyAccount();
-                myAccount.useremail.Text = user.email;
-                myAccount.username.Text = user.firstName + " " + user.lastName;
-                myAccount.userage.Text = user.DOB.Date.ToString("d");
-                myAccount.usercardnumber.Text = account.cardNumber.ToString();
-                myAccount.usercountry.Text = user.addressCountry;
-                myAccount.userphonenumber.Text = user.phoneNumber;
-                myAccount.amount.Text = account.balance.ToString() + "$";
-                myAccount.Show();
-                this.Close();
+                if (account != null && user != null)
+                {
+                    MyAccount myAccount = new MyAccount();
+                    myAccount.useremail.Text = user.email;
+                    myAccount.username.Text = user.firstName + " " + user.lastName;
+                    myAccount.userage.Text = user.DOB.Date.ToString("d");
+                    myAccount.usercardnumber.Text = account.cardNumber.ToString();
+                    myAccount.usercountry.Text = user.addressCountry;
+                    myAccount.userphonenumber.Text = user.phoneNumber;
+                    myAccount.amount.Text = account.balance.ToString() + "$";
+                    myAccount.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Please Check Your Email & Password, and Try Again!");
+                }
+                
             }
             else
             {
-                MessageBox.Show("Login Failed!");
+                MessageBox.Show("Please Check Your Email & Password, and Try Again!");
             }
 
 
 
 
 
-            /* try
+            /*
              {
 
                  cmd = new SqlCommand("select count(1) from UserInfo where Email = @email and Password = @Pwd COLLATE SQL_Latin1_General_CP1_CS_AS", con);

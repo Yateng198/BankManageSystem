@@ -91,7 +91,20 @@ namespace BankManageSystem
             newUser.email = email.Text.Trim();
             try
             {
-                newUser.DOB = dobPicker.SelectedDate.Value.Date;
+                DateTime currentDay= DateTime.Now.Date;
+                DateTime userDOB = dobPicker.SelectedDate.Value.Date;
+                TimeSpan age = currentDay - userDOB;
+                if (age.TotalDays >= 18 * 365)
+                {
+                    newUser.DOB = userDOB;
+                }
+                else
+                {
+                    MessageBox.Show("We are sorry, your age is not sufficient to open bank account yet!");
+                    return;
+                }
+
+                    
             }
             catch (Exception ex)
             {
