@@ -8,8 +8,8 @@ namespace BankManageSystem.Models
 {
     internal class UserAccount
     {
-        private int userId { get; set; }
-        private string cardNumber { get; set; }
-        private float balance { get; set; }
+        public int userId { get; set; }
+        public string cardNumber { get; set; }
+        public double balance { get; set; }
     }
 }
