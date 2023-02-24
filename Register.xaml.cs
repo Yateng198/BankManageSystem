@@ -44,7 +44,6 @@ namespace BankManageSystem
 
 
         }
-
         private async void registe_Click(object sender, RoutedEventArgs e)
         {
             if (fname.Text == "")
@@ -83,7 +82,6 @@ namespace BankManageSystem
                 MessageBox.Show("Enter your Postal Code please!");
                 return;
             }
-
             UserInfo newUser = new UserInfo();
             newUser.password = pwd.Password.ToString();
             newUser.firstName = fname.Text.Trim();
@@ -103,8 +101,6 @@ namespace BankManageSystem
                     MessageBox.Show("We are sorry, your age is not sufficient to open bank account yet!");
                     return;
                 }
-
-                    
             }
             catch (Exception ex)
             {
@@ -145,9 +141,6 @@ namespace BankManageSystem
             }
 
             
-
-            
-
             /* try
              {
 
@@ -248,10 +241,6 @@ namespace BankManageSystem
                      {
                          MessageBox.Show("Password must contain: 2 Uppercase letters, 2 Lowercase letters, 2 digits and 2 special charactors, length 8-15!");
                      }
-
-
-
-
                  }
              }
              catch (SqlException ex)

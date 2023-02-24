@@ -99,10 +99,6 @@ namespace BankManageSystem
                     
 
 
-
-
-
-
                     /*string query = "UPDATE UserAccount SET Balance = Balance + @depositAmount WHERE CardNumber = @accountNumber";
                     cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@depositAmount", input);
