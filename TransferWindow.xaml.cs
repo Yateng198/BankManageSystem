@@ -138,7 +138,6 @@ namespace BankManageSystem
 
         private async void accountNumberButton_Click(object sender, RoutedEventArgs e)
         {
-           // con.Open();
             currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
             if (!amountTransfer.Text.Equals("") && float.TryParse(amountTransfer.Text, out float transferAmount) && transferAmount > 0)
             {
@@ -193,20 +192,16 @@ namespace BankManageSystem
                         else
                         {
                             MessageBox.Show("Please enter a valide Account Number and try again!");
-                           // con.Close();
                         }
                     }
                     else
                     {
-                       // con.Close();
                     }
-                   // con.Close();
                 }
             }
             else
             {
                 MessageBox.Show("Enter a valide amount first please!");
-               // con.Close();
             }
 
         }
