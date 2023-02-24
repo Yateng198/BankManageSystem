@@ -1,8 +1,11 @@
-﻿using MahApps.Metro.Converters;
+﻿using BankManageSystem.Models;
+using MahApps.Metro.Converters;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +39,8 @@ namespace BankManageSystem
         long senderCardNumber;
         int loggedUserId;
 
+        HttpClient client;
+
 
 
         public TransferWindow(string userEmail)
@@ -45,59 +50,66 @@ namespace BankManageSystem
             con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
         }
 
-        private void emailButton_Click(object sender, RoutedEventArgs e)
+        private async void emailButton_Click(object sender, RoutedEventArgs e)
         {
-            con.Open();
+            //Read user input the transfer amount first
             currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
+            //Check if it is a valid input
             if (!amountTransfer.Text.Equals("") && float.TryParse(amountTransfer.Text, out float transferAmount) && transferAmount > 0)
             {
+                //Check if there is sufficient current amount on sender account
                 if (transferAmount > currenBalance)
                 {
-                    MessageBox.Show("We are sorry, but you don't have enough amount on you account for this transfer, try again please!");
+                    MessageBox.Show("We are sorry, but you don't have sufficient amount on you account for this transfer, try again please!");
                 }
                 else
                 {
+                    //Ask user to enter receiver email address
                     InputDialog inputDialog = new InputDialog("Please enter the receiver Email Address:", "Email");
-                    string input = "";
+                    //string input = "";
                     if (inputDialog.ShowDialog() == true)
                     {
-                        input = inputDialog.Answer;
+                       string input = inputDialog.Answer;
+                        //Check if receiver email address entered is valid or not
                         if (input != "")
                         {
                             if (input.Equals("Email"))
                             {
                                 MessageBox.Show("Please enter a valide Email Address and try again!");
-                                con.Close();
                             }
                             else
                             {
-                                cmd = new SqlCommand("select count(1) from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                                cmd.CommandType = System.Data.CommandType.Text;
-                                cmd.Parameters.AddWithValue("@email", input);
-                                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                                if (count == 1)
+                                //Create serialized json body to pass the value through http request(data safty)
+                                var data = new { emailAddress = input, amountTran = amountTransfer.Text };
+                                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                                client = new HttpClient();
+                                HttpResponseMessage responseMessage = await client.PostAsync("https://localhost:7026/api/Transfer/eamil", content);
+                                //Make sure success code received
+                                if (responseMessage.IsSuccessStatusCode)
                                 {
-                                    //Add check if sender and receiver is the same account
-                                    cmd = new SqlCommand("select UserId, F_Name, L_Name from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                                   
-                                    cmd.Parameters.AddWithValue("@email", input);
-                                    SqlDataReader reader = cmd.ExecuteReader();
-                                    while (reader.Read())
+                                    string response = await responseMessage.Content.ReadAsStringAsync();
+                                    UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
+                                    //Take out the product object from the Json response message object
+                                    UserInfo user = userInfoResponse.user;
+                                    string msg = userInfoResponse.StatusMessage;
+                                    int statusCode = userInfoResponse.StatusCode;
+                                    
+                                    if(statusCode == 200)
                                     {
-                                        userId = reader.GetInt32(0);
-                                        firstName = reader.GetString(1);
-                                        lastName = reader.GetString(2);
+                                        //set up neccesary data for confirm button event
+                                        summary.Text = msg;
+                                        userId = user.userId;
+                                        firstName = user.firstName;
+                                        lastName = user.lastName;
+                                    }else if(statusCode == 100)
+                                    {
+                                        MessageBox.Show(msg);
                                     }
-                                    reader.Close();
-                                    summary.Text = "You are Making a Tranfer of Amount: " + amountTransfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
-                                                   "\r\nConfirm or Cancel?";
-                                    con.Close();
-
+                                    //All else error messages
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No user found! Check the email entered and try again please");
-                                    con.Close();
+                                    MessageBox.Show("Bad request!");
                                 }
                             }
 
@@ -105,30 +117,28 @@ namespace BankManageSystem
                         else
                         {
                             MessageBox.Show("Please enter a valide Email Address and try again!");
-                            con.Close();
+                            
                         }
                     }
                     else
                     {
-                        con.Close();
+                      
                     }
                 }
-               
-
             }
             else
             {
                 MessageBox.Show("Enter a valide amount first please!");
-                con.Close();
+               
             }
 
         }
 
 
 
-        private void accountNumberButton_Click(object sender, RoutedEventArgs e)
+        private async void accountNumberButton_Click(object sender, RoutedEventArgs e)
         {
-            con.Open();
+           // con.Open();
             currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
             if (!amountTransfer.Text.Equals("") && float.TryParse(amountTransfer.Text, out float transferAmount) && transferAmount > 0)
             {
@@ -145,71 +155,64 @@ namespace BankManageSystem
                         input = inputDialog.Answer;
                         if (input != "" && long.TryParse(input, out long accNum))
                         {
-                            cmd = new SqlCommand("select UserId from UserAccount where CardNumber = @cardnumber", con);
-                            cmd.Parameters.AddWithValue("@cardnumber", input);
-                            var checkID = cmd.ExecuteScalar();
-                            if (checkID != null)
+                            //Create serialized json body to pass the value through http request(data safty)
+                            var data = new { cardNumber = input, amountTran = amountTransfer.Text };
+                            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                            client = new HttpClient();
+                            HttpResponseMessage responseMessage = await client.PostAsync("https://localhost:7026/api/Transfer/card", content);
+                            //Make sure success code received
+                            if (responseMessage.IsSuccessStatusCode)
                             {
+                                string response = await responseMessage.Content.ReadAsStringAsync();
+                                UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
+                                //Take out the product object from the Json response message object
+                                UserInfo user = userInfoResponse.user;
+                                string msg = userInfoResponse.StatusMessage;
+                                int statusCode = userInfoResponse.StatusCode;
 
-                                //Add check if sender and receiver is the same account
-                                try
+                                if (statusCode == 200)
                                 {
-                                    userId = (int)cmd.ExecuteScalar();
-                                    if (userId != 0)
-                                    {
-                                        cmd = new SqlCommand("select F_Name, L_Name from UserInfo where UserId = @userid", con);
-                                    
-                                        cmd.Parameters.AddWithValue("@userid", userId);
-                                        SqlDataReader reader = cmd.ExecuteReader();
-                                        while (reader.Read())
-                                        {
-                                            firstName = reader.GetString(0);
-                                            lastName = reader.GetString(1);
-                                        }
-
-                                        reader.Close();
-                                        summary.Text = "You are Making a Tranfer of Amount: " + amountTransfer.Text + "\r\n" + "To: " + firstName + " " + lastName +
-                                                       "\r\nConfirm or Cancel?";
-                                        con.Close();
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
-                                        con.Close();
-                                    }
+                                    //set up neccesary data for confirm button event
+                                    summary.Text = msg;
+                                    userId = user.userId;
+                                    firstName = user.firstName;
+                                    lastName = user.lastName;
                                 }
-                                catch (Exception ex)
+                                else if (statusCode == 100)
                                 {
-                                    MessageBox.Show("Please enter a valide EXCEPTION Account Number and try again!");
-                                    con.Close();
+                                    MessageBox.Show(msg);
                                 }
+                                //All else error messages
                             }
                             else
                             {
-                                MessageBox.Show("No Account found! Check the Account Nuber entered and try again please");
-                                con.Close();
+                                MessageBox.Show("Bad request!");
                             }
+
                         }
                         else
                         {
                             MessageBox.Show("Please enter a valide Account Number and try again!");
-                            con.Close();
+                           // con.Close();
                         }
                     }
                     else
                     {
-                        con.Close();
+                       // con.Close();
                     }
-                    con.Close();
+                   // con.Close();
                 }
             }
             else
             {
                 MessageBox.Show("Enter a valide amount first please!");
-                con.Close();
+               // con.Close();
             }
 
         }
+
+        
+
         private async void confirmButton_Click(object sender, RoutedEventArgs e)
         {
             con.Open();
