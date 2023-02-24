@@ -1,11 +1,15 @@
 ﻿
+using BankManageSystem.Models;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,12 +31,13 @@ namespace BankManageSystem
     {
         SqlConnection con;
         SqlCommand cmd, cmd1, cmd2;
+        HttpClient client;
 
         public MyAccount()
         {
             InitializeComponent();
             con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
-            
+
         }
 
         private void Transfer_Click(object sender, RoutedEventArgs e)
@@ -45,7 +50,7 @@ namespace BankManageSystem
 
         private void exit_Click(object sender, RoutedEventArgs e)
         {
-            
+
             this.Close();
         }
 
@@ -58,14 +63,43 @@ namespace BankManageSystem
             {
                 input = inputDialog.Answer;
             }
-            
+
             // Check if the user clicked OK or Cancel
             if (input != "")
             {
                 // If the user clicked OK, attempt to parse the input value as a float
                 if (float.TryParse(input, out float depositAmount) && depositAmount > 0)
                 {
-                    string query = "UPDATE UserAccount SET Balance = Balance + @depositAmount WHERE CardNumber = @accountNumber";
+                    string cardNum = usercardnumber.Text;
+                    var data = new { amountAdding = input, userCardNum = cardNum };
+                    var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    client = new HttpClient();
+                    HttpResponseMessage responseMessage = await client.PostAsync("https://localhost:7026/api/UserInfo/deposit", content);
+
+
+                    if (responseMessage.IsSuccessStatusCode) {
+                        string response = await responseMessage.Content.ReadAsStringAsync();
+
+                        UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
+                        //Take out the product object from the Json response message object
+                        UserAccount account = userInfoResponse.accout;
+                        string msg = userInfoResponse.StatusMessage;
+                        int statusCode = userInfoResponse.StatusCode;
+
+                        amount.Text = account.balance.ToString();
+                        MessageBox.Show(msg);
+
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bad request!");
+                    }
+                    
+                    
+
+
+                    /*string query = "UPDATE UserAccount SET Balance = Balance + @depositAmount WHERE CardNumber = @accountNumber";
                     cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@depositAmount", input);
                     cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
@@ -96,7 +130,7 @@ namespace BankManageSystem
                     cmd.Parameters.AddWithValue("@time", currentDateTime);
                     cmd.Parameters.AddWithValue("@amount", depositAmount);
                     await cmd.ExecuteNonQueryAsync();
-                    con.Close();
+                    con.Close();*/
                 }
                 else
                 {
@@ -107,6 +141,9 @@ namespace BankManageSystem
             }
             con.Close();
         }
+
+
+
 
         private async void withdrawal_Click(object sender, RoutedEventArgs e)
         {
@@ -125,15 +162,16 @@ namespace BankManageSystem
                 {
 
                     float currentAmount = 0;
-                    string amountNow = amount.Text.Substring(0, amount.Text.Length - 2);
+                    string amountNow = amount.Text.Substring(0, amount.Text.Length - 1);
                     try
                     {
                         currentAmount = float.Parse(amountNow);
-                    }catch (FormatException)
+                    }
+                    catch (FormatException)
                     {
                         MessageBox.Show("Not working!");
                     }
-                    if(currentAmount >= withdrawalAmount)
+                    if (currentAmount >= withdrawalAmount)
                     {
                         string updateQuery = "UPDATE UserAccount SET Balance = Balance - @windrawalAmount WHERE CardNumber = @accountNumber";
                         cmd = new SqlCommand(updateQuery, con);
@@ -141,7 +179,7 @@ namespace BankManageSystem
                         cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
                         await cmd.ExecuteNonQueryAsync();
 
-                     //   Retrieve the new balance value from the database
+                        //   Retrieve the new balance value from the database
                         string query = "SELECT UserId, Balance FROM UserAccount WHERE CardNumber = @accountNumber";
                         cmd = new SqlCommand(query, con);
                         cmd.Parameters.AddWithValue("@accountNumber", usercardnumber.Text);
@@ -155,7 +193,7 @@ namespace BankManageSystem
                         }
                         reader.Close();
                         amount.Text = newAmount.ToString() + "$";
-                        MessageBox.Show($"You have deposited {withdrawalAmount:C} Successfully!");
+                        MessageBox.Show($"You have withdrawn {withdrawalAmount:C} Successfully!");
 
                         //Update deposit record into database
                         cmd = new SqlCommand("Insert into UserTransaction values (@userid, @cardNum, @type, @time, @amount)", con);

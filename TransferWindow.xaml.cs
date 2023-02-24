@@ -67,6 +67,7 @@ namespace BankManageSystem
                             if (input.Equals("Email"))
                             {
                                 MessageBox.Show("Please enter a valide Email Address and try again!");
+                                con.Close();
                             }
                             else
                             {
@@ -76,6 +77,7 @@ namespace BankManageSystem
                                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                                 if (count == 1)
                                 {
+                                    //Add check if sender and receiver is the same account
                                     cmd = new SqlCommand("select UserId, F_Name, L_Name from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS", con);
                                    
                                     cmd.Parameters.AddWithValue("@email", input);
@@ -148,6 +150,8 @@ namespace BankManageSystem
                             var checkID = cmd.ExecuteScalar();
                             if (checkID != null)
                             {
+
+                                //Add check if sender and receiver is the same account
                                 try
                                 {
                                     userId = (int)cmd.ExecuteScalar();
@@ -196,6 +200,7 @@ namespace BankManageSystem
                     {
                         con.Close();
                     }
+                    con.Close();
                 }
             }
             else
@@ -292,6 +297,7 @@ namespace BankManageSystem
                         // Update the balance displaying in this window, and clear the transfer amount
                         balance.Text = senderNewAmount.ToString() + "$";
                         amountTransfer.Text = "";
+                        summary.Text = "";
                         userId = 0;
 
                     }
