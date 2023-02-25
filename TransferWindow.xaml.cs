@@ -91,7 +91,7 @@ namespace BankManageSystem
                                 {
                                     string response = await responseMessage.Content.ReadAsStringAsync();
                                     UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
-                                    //Take out the product object from the Json response message object
+                                    //Take out the object from the Json response message object
                                     UserInfo user = userInfoResponse.user;
                                     string msg = userInfoResponse.StatusMessage;
                                     int statusCode = userInfoResponse.StatusCode;
@@ -167,7 +167,7 @@ namespace BankManageSystem
                             {
                                 string response = await responseMessage.Content.ReadAsStringAsync();
                                 UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
-                                //Take out the product object from the Json response message object
+                                //Take out the objects from the Json response message object
                                 UserInfo user = userInfoResponse.user;
                                 string msg = userInfoResponse.StatusMessage;
                                 int statusCode = userInfoResponse.StatusCode;
@@ -241,7 +241,7 @@ namespace BankManageSystem
 
                     string response = await responseMessage.Content.ReadAsStringAsync();
                     UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
-                    //Take out the product object from the Json response message object
+                    //Take out the objects from the Json response message object
                     UserInfo senderUserInfo = userInfoResponse.user;
                     UserAccount SenderAccount = userInfoResponse.accout;
                     // string msg = userInfoResponse.StatusMessage;
@@ -303,9 +303,34 @@ namespace BankManageSystem
             con.Open();
             // Close this window, show the myAccount window and update the balance to the textblock named amount
             MyAccount myAccount = new MyAccount();
+            //Create serialized json body to pass the value through http request(data safty)
+            var data = new { email = loggedUserEmail };
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            client = new HttpClient();
+            HttpResponseMessage responseMessage = await client.PostAsync("https://localhost:7026/api/Transfer/cancel", content);
+            //Make sure success code received
+            responseMessage.EnsureSuccessStatusCode();
+            string response = await responseMessage.Content.ReadAsStringAsync();
+            UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
+
+            //Take out the objects from the Json response message object
+            UserInfo user = userInfoResponse.user;
+            UserAccount account = userInfoResponse.accout;
+
+            myAccount.useremail.Text = loggedUserEmail;
+            myAccount.username.Text = user.firstName + " " + user.lastName;
+            myAccount.userage.Text = user.DOB.ToString("yyyy-MM-dd");
+            myAccount.userphonenumber.Text = user.phoneNumber;
+            myAccount.usercountry.Text = user.addressCountry;
+            myAccount.usercardnumber.Text = account.cardNumber.ToString();
+            myAccount.amount.Text = account.balance.ToString();
+            myAccount.Show();
+            this.Close();
 
 
-            cmd = new SqlCommand("select F_Name, L_Name, Date_Of_Birth, Mobile, Address_Country, UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS ", con);
+
+
+            /*cmd = new SqlCommand("select F_Name, L_Name, Date_Of_Birth, Mobile, Address_Country, UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS ", con);
             cmd.Parameters.AddWithValue("@email", loggedUserEmail);
             SqlDataReader reader = await cmd.ExecuteReaderAsync();
             while (reader.Read())
@@ -330,7 +355,7 @@ namespace BankManageSystem
             myAccount.useremail.Text = loggedUserEmail;
             myAccount.Show();
             this.Close();
-            con.Close();
+            con.Close();*/
         }
     }
 }
