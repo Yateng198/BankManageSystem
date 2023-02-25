@@ -47,6 +47,9 @@ namespace BankManageSystem
 
         private void exit_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow mw = new MainWindow();
+            mw.email.Text = useremail.Text;
+            mw.Show();
             this.Close();
         }
 

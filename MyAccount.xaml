@@ -4,36 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankManageSystem"
-        mc:Ignorable="d"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         Title="MyAccount" Height="450" Width="800">
     <Grid>
-        <Button x:Name="deposit" Content="Deposit" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,68,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="deposit_Click">
+        <Button x:Name="deposit" Content="Deposit" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,47,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="deposit_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="withdrawal" Content="Withdrawal" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,129,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="withdrawal_Click">
+        <Button x:Name="withdrawal" Content="Withdrawal" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,108,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="withdrawal_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="Transfer" Content="Transfer" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,196,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="Transfer_Click">
+        <Button x:Name="Transfer" Content="Transfer" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,175,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115" Click="Transfer_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Label Content="Date Of Birth: " HorizontalAlignment="Left" Margin="90,189,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label Content="Country:" HorizontalAlignment="Left" Margin="90,226,0,0" VerticalAlignment="Top" FontSize="16" Width="86"/>
-        <Label Content="Phone Number:" HorizontalAlignment="Left" Margin="90,258,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label Content="Card Number:" HorizontalAlignment="Left" Margin="90,295,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <Label Content="Balance:" HorizontalAlignment="Left" Margin="90,331,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
-        <TextBlock x:Name="username" HorizontalAlignment="Left" Margin="97,153,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" FontSize="16">
+        <Label Content="Date Of Birth: " HorizontalAlignment="Left" Margin="101,156,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <Label Content="Country:" HorizontalAlignment="Left" Margin="101,193,0,0" VerticalAlignment="Top" FontSize="16" Width="86"/>
+        <Label Content="Phone Number:" HorizontalAlignment="Left" Margin="101,225,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <Label Content="Card Number:" HorizontalAlignment="Left" Margin="101,262,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <Label Content="Balance:" HorizontalAlignment="Left" Margin="101,298,0,0" VerticalAlignment="Top" FontSize="16" Width="127"/>
+        <TextBlock x:Name="username" HorizontalAlignment="Left" Margin="108,120,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" FontSize="16">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
@@ -41,57 +41,57 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="useremail" HorizontalAlignment="Left" Margin="97,68,0,0" TextWrapping="Wrap" Text="Email" VerticalAlignment="Top" FontSize="16" Width="176">
+        <TextBlock x:Name="useremail" HorizontalAlignment="Left" Margin="108,49,0,0" TextWrapping="Wrap" Text="Email" VerticalAlignment="Top" FontSize="16" Width="176">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="userage" HorizontalAlignment="Left" Margin="251,193,0,0" TextWrapping="Wrap" Text="DOB" VerticalAlignment="Top" FontSize="16" Width="155">
+        <TextBlock x:Name="userage" HorizontalAlignment="Left" Margin="262,160,0,0" TextWrapping="Wrap" Text="DOB" VerticalAlignment="Top" FontSize="16" Width="155">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="usercountry" HorizontalAlignment="Left" Margin="251,231,0,0" TextWrapping="Wrap" Text="Country" VerticalAlignment="Top" FontSize="16" Width="155">
+        <TextBlock x:Name="usercountry" HorizontalAlignment="Left" Margin="262,198,0,0" TextWrapping="Wrap" Text="Country" VerticalAlignment="Top" FontSize="16" Width="155">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="userphonenumber" HorizontalAlignment="Left" Margin="251,263,0,0" TextWrapping="Wrap" Text="Mobile" VerticalAlignment="Top" FontSize="16" Width="155">
+        <TextBlock x:Name="userphonenumber" HorizontalAlignment="Left" Margin="262,230,0,0" TextWrapping="Wrap" Text="Mobile" VerticalAlignment="Top" FontSize="16" Width="155">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="usercardnumber" HorizontalAlignment="Left" Margin="251,300,0,0" TextWrapping="Wrap" Text="AccountNumber" VerticalAlignment="Top" FontSize="16" Width="155">
+        <TextBlock x:Name="usercardnumber" HorizontalAlignment="Left" Margin="262,267,0,0" TextWrapping="Wrap" Text="AccountNumber" VerticalAlignment="Top" FontSize="16" Width="155">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="amount" HorizontalAlignment="Left" Margin="251,336,0,0" TextWrapping="Wrap" Text="Balance" VerticalAlignment="Top" FontSize="16" Width="160">
+        <TextBlock x:Name="amount" HorizontalAlignment="Left" Margin="262,303,0,0" TextWrapping="Wrap" Text="Balance" VerticalAlignment="Top" FontSize="16" Width="160">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="97,117,0,0" Text="Welcom" VerticalAlignment="Top" FontStyle="Italic" FontSize="16" Width="120" TextAlignment="Justify" LineHeight="16" TextWrapping="Wrap" FontWeight="DemiBold"/>
-        <Button x:Name="list" Content="Transactions" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,260,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115">
+        <TextBlock HorizontalAlignment="Left" Margin="108,84,0,0" Text="Welcom" VerticalAlignment="Top" FontStyle="Italic" FontSize="16" Width="120" TextAlignment="Justify" LineHeight="16" TextWrapping="Wrap" FontWeight="DemiBold"/>
+        <Button x:Name="list" Content="Transactions" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,239,0,0" VerticalAlignment="Top" FontSize="16" Height="35" Width="115">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="exit" Content="Exit" HorizontalAlignment="Left" Background="{x:Null}" Margin="545,321,0,0" VerticalAlignment="Top" FontSize="16" Height="36" Width="115" IsDefault="True" Click="exit_Click">
+        <Button x:Name="exit" Content="Exit" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,300,0,0" VerticalAlignment="Top" FontSize="16" Height="36" Width="115" Click="exit_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
