@@ -4,7 +4,7 @@ This repository is for our Application Development Project
 
 a.Group Name: Team Nighthawk<br />
 Nighthawk is a symbol of good luck, high-tech and also symbolizes moving towards our dreams to achieve our goals in life. We hope we could represent the spirit of Nighthawk.<br />
-GitHub repository link: https://github.com/humphrey777/nighthawk
+GitHub repository link:https://github.com/Yateng198/BankManageSystem/tree/master
 
 b.Group Members: Yateng Geng, Heping Song
 
