@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankManageSystem"
         mc:Ignorable="d"
-        Title="Exchange" Height="450" Width="800">
+        Title="Exchange" WindowStartupLocation="CenterScreen" Height="450" Width="800">
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Label Content="Today's Currency" HorizontalAlignment="Center" Margin="0,11,0,0" VerticalAlignment="Top" Width="170" FontWeight="Bold" FontSize="18"/>
         <Label Content="CAD" HorizontalAlignment="Left" Margin="148,77,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
