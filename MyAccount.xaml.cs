@@ -36,15 +36,16 @@ namespace BankManageSystem
             InitializeComponent();
 
         }
-
+        //Go to transfer window to make transfer
         private void Transfer_Click(object sender, RoutedEventArgs e)
         {
+            //Pass current logged user email to transfer window
             TransferWindow transferWindow = new TransferWindow(useremail.Text);
             transferWindow.balance.Text = amount.Text;
             transferWindow.Show();
             this.Close();
         }
-
+        //Back to Main window
         private void exit_Click(object sender, RoutedEventArgs e)
         {
             MainWindow mw = new MainWindow();
@@ -52,7 +53,7 @@ namespace BankManageSystem
             mw.Show();
             this.Close();
         }
-
+        //Deposit function
         private async void deposit_Click(object sender, RoutedEventArgs e)
         {
             InputDialog inputDialog = new InputDialog("Please enter the deposit amount:", "Amount");
@@ -69,6 +70,7 @@ namespace BankManageSystem
                 if (float.TryParse(input, out float depositAmount) && depositAmount > 0)
                 {
                     string cardNum = usercardnumber.Text;
+                    //Also pass user info through json body for data safety
                     var data = new { amountAdding = input, userCardNum = cardNum };
                     var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
                     client = new HttpClient();
@@ -79,11 +81,11 @@ namespace BankManageSystem
                     {
                         string response = await responseMessage.Content.ReadAsStringAsync();
                         UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
-                        //Take out the product object from the Json response message object
+                        //Take out the object from the Json response message object
                         UserAccount account = userInfoResponse.accout;
                         string msg = userInfoResponse.StatusMessage;
 
-                        amount.Text = account.balance.ToString();
+                        amount.Text = account.balance.ToString() + "$";
                         MessageBox.Show(msg);
                     }
                     else
@@ -102,7 +104,7 @@ namespace BankManageSystem
 
 
 
-
+        //Withdrawa function
         private async void withdrawal_Click(object sender, RoutedEventArgs e)
         {
             InputDialog inputDialog = new InputDialog("Please enter the withdrawal amount:", "Amount");
@@ -118,10 +120,8 @@ namespace BankManageSystem
                 // If the user clicked OK, attempt to parse the input value as a float
                 if (float.TryParse(input, out float withdrawalAmount) && withdrawalAmount > 0)
                 {
-                    float currentAmount = 0;
                     string amountNow = amount.Text.Substring(0, amount.Text.Length - 1);
-
-                    currentAmount = float.Parse(amountNow);
+                    float currentAmount = float.Parse(amountNow);
                     //Check if there is sufficient amount for this withdrwal
                     if (currentAmount >= withdrawalAmount)
                     {
@@ -136,12 +136,11 @@ namespace BankManageSystem
                             string response = await responseMessage.Content.ReadAsStringAsync();
 
                             UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
-                            //Take out the product object from the Json response message object
+                            //Take out the object from the Json response message object
                             UserAccount account = userInfoResponse.accout;
                             string msg = userInfoResponse.StatusMessage;
-                            int statusCode = userInfoResponse.StatusCode;
 
-                            amount.Text = account.balance.ToString();
+                            amount.Text = account.balance.ToString() + "$";
                             MessageBox.Show(msg);
                         }
                         else

@@ -29,17 +29,16 @@ namespace BankManageSystem
 
     public partial class TransferWindow : Window
     {
-        SqlConnection con;
-        SqlCommand cmd, cmd1, cmd2;
-        int receiverUserId;
-        string firstName;
-        string lastName;
+        //Global variables
         public string loggedUserEmail { get; set; }
-        public float currenBalance;
 
+        public float currenBalance;
         double senderNewAmount;
         long senderCardNumber;
         int senderUserId;
+        int receiverUserId;
+        string firstName;
+        string lastName;
 
         HttpClient client;
 
@@ -49,7 +48,6 @@ namespace BankManageSystem
         {
             loggedUserEmail = userEmail;
             InitializeComponent();
-            con = new SqlConnection("Data Source=DESKTOP-1AHTENP\\MSSQLSERVER01;Initial Catalog=BankManageSystemNewDB;Integrated Security=True");
         }
 
         private async void emailButton_Click(object sender, RoutedEventArgs e)
@@ -144,6 +142,7 @@ namespace BankManageSystem
             currenBalance = float.Parse(balance.Text.Trim().TrimEnd('$'));
             if (!amountTransfer.Text.Equals("") && float.TryParse(amountTransfer.Text, out float transferAmount) && transferAmount > 0)
             {
+                //Check if there is sufficient current amount on sender account
                 if (transferAmount > currenBalance)
                 {
                     MessageBox.Show("We are sorry, but you don't have enough amount on you account for this transfer, try again please!");
@@ -213,11 +212,9 @@ namespace BankManageSystem
 
         private async void confirmButton_Click(object sender, RoutedEventArgs e)
         {
-            //con.Open();
             if (receiverUserId == 0)
             {
                 MessageBox.Show("Click on \"Email Address\" or \"Account Number\" to enter receiver infomation please!");
-                // con.Close();
             }
             else
             {
@@ -236,16 +233,16 @@ namespace BankManageSystem
                     var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
                     client = new HttpClient();
                     HttpResponseMessage responseMessage = await client.PostAsync("https://localhost:7026/api/Transfer/confirm", content);
-                    responseMessage.EnsureSuccessStatusCode();
                     //Make sure success code received
-
+                    responseMessage.EnsureSuccessStatusCode();
+                    //Read response as a string
                     string response = await responseMessage.Content.ReadAsStringAsync();
+                    //Deserialize the response to be UserInfoResponse object
                     UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
                     //Take out the objects from the Json response message object
                     UserInfo senderUserInfo = userInfoResponse.user;
                     UserAccount SenderAccount = userInfoResponse.accout;
-                    // string msg = userInfoResponse.StatusMessage;
-                    // int statusCode = userInfoResponse.StatusCode;
+                    //Setup neccesary arguments from reponse objects
                     senderNewAmount = SenderAccount.balance;
                     senderCardNumber = SenderAccount.cardNumber;
 
@@ -255,11 +252,11 @@ namespace BankManageSystem
                     string senderMobile = senderUserInfo.phoneNumber;
                     string senderCountry = senderUserInfo.addressCountry;
 
-
+                    //Updated current balance in window and success information popout
                     balance.Text = senderNewAmount.ToString() + "$";
                     MessageBox.Show("Transfer " + transferAmount.ToString() + "$ to: " + firstName + " " + lastName + " Successful!");
 
-
+                    //Prompt user to make another transfer or not
                     MessageBoxResult result = MessageBox.Show("Do you want to make another transfer?", "Another Transfer?", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
@@ -284,23 +281,19 @@ namespace BankManageSystem
                         myAccount.usercountry.Text = senderCountry;
 
                         myAccount.Show();
-                        // con.Close();
                         this.Close();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Enter the amount you want transfer please!");
-                    // con.Close();
                 }
 
             }
-            // con.Close();
         }
 
         private async void cancel_Click(object sender, RoutedEventArgs e)
         {
-            con.Open();
             // Close this window, show the myAccount window and update the balance to the textblock named amount
             MyAccount myAccount = new MyAccount();
             //Create serialized json body to pass the value through http request(data safty)
@@ -313,7 +306,7 @@ namespace BankManageSystem
             string response = await responseMessage.Content.ReadAsStringAsync();
             UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
 
-            //Take out the objects from the Json response message object
+            //Take out the objects from the Json response message object and setup logged in window information with updated logged in user infomation
             UserInfo user = userInfoResponse.user;
             UserAccount account = userInfoResponse.accout;
 
@@ -323,39 +316,9 @@ namespace BankManageSystem
             myAccount.userphonenumber.Text = user.phoneNumber;
             myAccount.usercountry.Text = user.addressCountry;
             myAccount.usercardnumber.Text = account.cardNumber.ToString();
-            myAccount.amount.Text = account.balance.ToString();
+            myAccount.amount.Text = account.balance.ToString() + "$";
             myAccount.Show();
             this.Close();
-
-
-
-
-            /*cmd = new SqlCommand("select F_Name, L_Name, Date_Of_Birth, Mobile, Address_Country, UserId from UserInfo where Email = @email COLLATE SQL_Latin1_General_CP1_CS_AS ", con);
-            cmd.Parameters.AddWithValue("@email", loggedUserEmail);
-            SqlDataReader reader = await cmd.ExecuteReaderAsync();
-            while (reader.Read())
-            {
-                myAccount.username.Text = reader.GetString(0) + " " + reader.GetString(1);
-                myAccount.userage.Text = reader.GetDateTime(2).ToString("yyyy-MM-dd");
-                myAccount.userphonenumber.Text = reader.GetString(3);
-                myAccount.usercountry.Text = reader.GetString(4);
-                senderUserId = reader.GetInt32(5);
-            }
-            reader.Close();
-            cmd = new SqlCommand("select CardNumber, Balance from UserAccount where UserId = @id", con);
-            cmd.Parameters.AddWithValue("@id", senderUserId);
-            reader = await cmd.ExecuteReaderAsync();
-            while (reader.Read())
-            {
-                myAccount.usercardnumber.Text = reader.GetInt64(0).ToString();
-                myAccount.amount.Text = reader.GetDouble(1).ToString() + "$";
-
-            }
-            reader.Close();
-            myAccount.useremail.Text = loggedUserEmail;
-            myAccount.Show();
-            this.Close();
-            con.Close();*/
         }
     }
 }

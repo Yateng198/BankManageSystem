@@ -91,7 +91,7 @@
                 </Style>
             </Button.Resources>
         </Button>
-        <Button x:Name="exit" Content="Exit" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,300,0,0" VerticalAlignment="Top" FontSize="16" Height="36" Width="115" Click="exit_Click">
+        <Button x:Name="exit" Content="Log Out" HorizontalAlignment="Left" Background="{x:Null}" Margin="556,300,0,0" VerticalAlignment="Top" FontSize="16" Height="36" Width="115" Click="exit_Click">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="5"/>
