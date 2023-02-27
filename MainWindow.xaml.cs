@@ -1,7 +1,12 @@
-﻿using System;
+﻿using BankManageSystem.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,14 +26,10 @@ namespace BankManageSystem
     /// </summary>
     public partial class MainWindow : Window
     {
-        SqlConnection con;
-        SqlCommand cmd, cmd1;
-        SqlDataReader reader;
+       
         public MainWindow()
         {
             InitializeComponent();
-            con = new SqlConnection("Data Source=LAPTOP-DT6BMRBG;Initial Catalog=final;Integrated Security=True");
-            con.Open();
         }
 
         private void register_Click(object sender, RoutedEventArgs e)
@@ -38,31 +39,47 @@ namespace BankManageSystem
             this.Close();
         }
 
-        private void login_Click(object sender, RoutedEventArgs e)
+        private async void login_Click(object sender, RoutedEventArgs e)
         {
-            try
+
+            string password = txtpwd.Password.ToString();
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] hashBytes;
+            
+            using (SHA256 sha256 = SHA256.Create())
             {
-                cmd = new SqlCommand("select count(1) from customerTable where Email = @email and Password = @Pwd COLLATE SQL_Latin1_General_CP1_CS_AS", con);
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.Parameters.AddWithValue("@email", email.Text);
-                cmd.Parameters.AddWithValue("@Pwd", txtpwd.Password);
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                if (count == 1)
+                hashBytes = sha256.ComputeHash(passwordBytes);
+            }
+            string hashedPassword = Convert.ToBase64String(hashBytes);
+
+            HttpClient client = new HttpClient();
+            //Instead of exposing user information in the link, pass user information through an json body  for data safety
+            var data = new { email = email.Text, password = hashedPassword };
+
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage responseMessage = await client.PostAsync("https://localhost:7026/api/UserInfo/login", content);
+
+            string response = await responseMessage.Content.ReadAsStringAsync();
+            UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
+            //Take out the objects from the Json response message object
+            UserInfo user = userInfoResponse.user;
+            UserAccount account = userInfoResponse.accout;
+            //Make sure success status code returned
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                if (account != null && user != null)
                 {
-                    cmd1 = new SqlCommand("select FName, LName, DateOfBirth, Country, PhoneNumber, Email from customerTable where email = @email",con);
-                    cmd1.Parameters.AddWithValue("@email", email.Text);
-                    reader = cmd1.ExecuteReader();
-                    MyAccount myAccount = new MyAccount();
-                    while (reader.Read())
-                    {
-                        myAccount.username.Content = reader.GetValue(0).ToString() + " " + reader.GetValue(1).ToString();
-                        myAccount.userage.Content = reader.GetValue(2).ToString();
-                        myAccount.usercountry.Content= reader.GetValue(3).ToString();
-                        myAccount.userphonenumber.Content= reader.GetValue(4).ToString();
-                        myAccount.usercardnumber.Content = "TBD";
-                        myAccount.amount.Content = "TBD";
-                        myAccount.useremail.Content = reader.GetValue(5).ToString();
-                    }
+                    //setup after login window components with loging in user infos
+                    int userIdPass = user.userId;
+                    MyAccount myAccount = new MyAccount(userIdPass);
+                    myAccount.useremail.Text = user.email;
+                    myAccount.username.Text = user.firstName + " " + user.lastName;
+                    myAccount.userage.Text = user.DOB.Date.ToString("d");
+                    myAccount.usercardnumber.Text = account.cardNumber.ToString();
+                    myAccount.usercountry.Text = user.addressCountry;
+                    myAccount.userphonenumber.Text = user.phoneNumber;
+                    myAccount.amount.Text = account.balance.ToString() + "$";
                     myAccount.Show();
                     this.Close();
                 }
@@ -70,23 +87,38 @@ namespace BankManageSystem
                 {
                     MessageBox.Show("Please Check Your Email & Password, and Try Again!");
                 }
-            }catch (SqlException ex)
-            {
-                MessageBox.Show(ex.Message);
+                
             }
-           
+            else
+            {
+                MessageBox.Show("Please Check Your Email & Password, and Try Again!");
+            }
 
         }
-
+        //Go to exchange window
         private void exchange_Click(object sender, RoutedEventArgs e)
         {
             Exchange ex = new Exchange();
             ex.Show();
             this.Close();
         }
-
+        //Quit the system
         private void exit_Click(object sender, RoutedEventArgs e)
         {
+            this.Close();
+        }
+
+        private void contact_Click(object sender, RoutedEventArgs e)
+        {
+            ContactUs cw = new ContactUs();
+            cw.Show();
+            this.Close();
+        }
+
+        private void about_Click(object sender, RoutedEventArgs e)
+        {
+            AboutUs aw = new AboutUs();
+            aw.Show();
             this.Close();
         }
     }

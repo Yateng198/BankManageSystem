@@ -46,25 +46,39 @@ namespace BankManageSystem
         {
             this.checkCAD();
         }
-        
-        private async void checkCAD() {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+        private async void checkCAD()
+        {
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            cad_amount.Text = (double.Parse(cad_amount.Text)).ToString("F2");
-            usd_amount.Text = (double.Parse(cad_amount.Text)*currency.USD).ToString("F2");
-            eur_amount.Text = (double.Parse(cad_amount.Text)*currency.EUR).ToString("F2");
-            cny_amount.Text = (double.Parse(cad_amount.Text)*currency.CNY).ToString("F2");
-            jpy_amount.Text = (double.Parse(cad_amount.Text)*currency.JPY).ToString("F2");
-            aud_amount.Text = (double.Parse(cad_amount.Text)*currency.AUD).ToString("F2");
-            mxn_amount.Text = (double.Parse(cad_amount.Text)*currency.MXN).ToString("F2");
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
+                if (double.TryParse(cad_amount.Text, out double cadAmount))
+                {
+                    cad_amount.Text = cadAmount.ToString("F2");
+                    usd_amount.Text = (cadAmount * currency.USD).ToString("F2");
+                    eur_amount.Text = (cadAmount * currency.EUR).ToString("F2");
+                    cny_amount.Text = (cadAmount * currency.CNY).ToString("F2");
+                    jpy_amount.Text = (cadAmount * currency.JPY).ToString("F2");
+                    aud_amount.Text = (cadAmount * currency.AUD).ToString("F2");
+                    mxn_amount.Text = (cadAmount * currency.MXN).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Button_usd(object sender, RoutedEventArgs e)
@@ -74,22 +88,36 @@ namespace BankManageSystem
 
         private async void checkUSD()
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
-            usd_amount.Text = (double.Parse(usd_amount.Text)).ToString("F2");
-            cad_amount.Text = (double.Parse(usd_amount.Text) / currency.USD).ToString("F2");
-            eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
-            cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
-            jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
-            aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
-            mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                if (double.TryParse(usd_amount.Text, out double usdAmount))
+                {
+                    usd_amount.Text = usdAmount.ToString("F2");
+                    cad_amount.Text = (usdAmount / currency.USD).ToString("F2");
+                    eur_amount.Text = (usdAmount * currency.EUR / currency.USD).ToString("F2");
+                    cny_amount.Text = (usdAmount * currency.CNY / currency.USD).ToString("F2");
+                    jpy_amount.Text = (usdAmount * currency.JPY / currency.USD).ToString("F2");
+                    aud_amount.Text = (usdAmount * currency.AUD / currency.USD).ToString("F2");
+                    mxn_amount.Text = (usdAmount * currency.MXN / currency.USD).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Button_eur(object sender, RoutedEventArgs e)
@@ -99,22 +127,36 @@ namespace BankManageSystem
 
         private async void checkEUR()
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
-            eur_amount.Text = (double.Parse(eur_amount.Text)).ToString("F2");
-            cad_amount.Text = (double.Parse(eur_amount.Text) / currency.EUR).ToString("F2");
-            usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
-            cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
-            jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
-            aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
-            mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                if (double.TryParse(eur_amount.Text, out double eurAmount))
+                {
+                    eur_amount.Text = eurAmount.ToString("F2");
+                    cad_amount.Text = (eurAmount / currency.EUR).ToString("F2");
+                    usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
+                    cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
+                    jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
+                    aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
+                    mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Button_cny(object sender, RoutedEventArgs e)
@@ -124,22 +166,36 @@ namespace BankManageSystem
 
         private async void checkCNY()
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
-            cny_amount.Text = (double.Parse(cny_amount.Text)).ToString("F2");
-            cad_amount.Text = (double.Parse(cny_amount.Text) / currency.CNY).ToString("F2");
-            usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
-            eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
-            jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
-            aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
-            mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                if (double.TryParse(cny_amount.Text, out double cnyAmount))
+                {
+                    cny_amount.Text = cnyAmount.ToString("F2");
+                    cad_amount.Text = (cnyAmount / currency.CNY).ToString("F2");
+                    usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
+                    eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
+                    jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
+                    aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
+                    mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 
@@ -150,22 +206,36 @@ namespace BankManageSystem
 
         private async void checkJPY()
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
-            jpy_amount.Text = (double.Parse(jpy_amount.Text)).ToString("F2");
-            cad_amount.Text = (double.Parse(jpy_amount.Text) / currency.JPY).ToString("F2");
-            usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
-            eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
-            cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
-            aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
-            mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                if (double.TryParse(jpy_amount.Text, out double jpyAmount))
+                {
+                    jpy_amount.Text = jpyAmount.ToString("F2");
+                    cad_amount.Text = (jpyAmount / currency.JPY).ToString("F2");
+                    usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
+                    eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
+                    cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
+                    aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
+                    mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Button_aud(object sender, RoutedEventArgs e)
@@ -175,22 +245,36 @@ namespace BankManageSystem
 
         private async void checkAUD()
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
-            aud_amount.Text = (double.Parse(aud_amount.Text)).ToString("F2");
-            cad_amount.Text = (double.Parse(aud_amount.Text) / currency.AUD).ToString("F2");
-            usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
-            eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
-            cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
-            jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
-            mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                if (double.TryParse(aud_amount.Text, out double audAmount))
+                {
+                    aud_amount.Text = audAmount.ToString("F2");
+                    cad_amount.Text = (audAmount / currency.AUD).ToString("F2");
+                    usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
+                    eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
+                    cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
+                    jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
+                    mxn_amount.Text = (double.Parse(cad_amount.Text) * currency.MXN).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Button_mxn(object sender, RoutedEventArgs e)
@@ -200,22 +284,36 @@ namespace BankManageSystem
 
         private async void checkMXN()
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                string today = DateTime.Now.ToString("yyyy-MM-dd");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
-            responseMessage.EnsureSuccessStatusCode();
-            string response = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessage = await client.GetAsync("https://localhost:7026/api/Currency/GetAllCurrencyByID/" + today);
+                responseMessage.EnsureSuccessStatusCode();
+                string response = await responseMessage.Content.ReadAsStringAsync();
 
-            Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
-            Currency currency = jsonObj.currency;
+                Response jsonObj = JsonConvert.DeserializeObject<Response>(response);
+                Currency currency = jsonObj.currency;
 
-            mxn_amount.Text = (double.Parse(mxn_amount.Text)).ToString("F2");
-            cad_amount.Text = (double.Parse(mxn_amount.Text) / currency.MXN).ToString("F2");
-            usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
-            eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
-            cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
-            jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
-            aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
+                if (double.TryParse(mxn_amount.Text, out double mxnAmount))
+                {
+                    mxn_amount.Text = mxnAmount.ToString("F2");
+                    cad_amount.Text = (mxnAmount / currency.MXN).ToString("F2");
+                    usd_amount.Text = (double.Parse(cad_amount.Text) * currency.USD).ToString("F2");
+                    eur_amount.Text = (double.Parse(cad_amount.Text) * currency.EUR).ToString("F2");
+                    cny_amount.Text = (double.Parse(cad_amount.Text) * currency.CNY).ToString("F2");
+                    jpy_amount.Text = (double.Parse(cad_amount.Text) * currency.JPY).ToString("F2");
+                    aud_amount.Text = (double.Parse(cad_amount.Text) * currency.AUD).ToString("F2");
+                }
+                else
+                {
+                    MessageBox.Show("Please only input numbers!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Button_go_back(object sender, RoutedEventArgs e)

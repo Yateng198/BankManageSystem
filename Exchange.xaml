@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankManageSystem"
         mc:Ignorable="d"
-        Title="Exchange" Height="450" Width="800">
+        Title="Currency Converter - Live Exchange Rates Today" 
+        WindowStartupLocation="CenterScreen" Height="450" Width="800">
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Label Content="Today's Currency" HorizontalAlignment="Center" Margin="0,11,0,0" VerticalAlignment="Top" Width="170" FontWeight="Bold" FontSize="18"/>
         <Label Content="CAD" HorizontalAlignment="Left" Margin="148,77,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
@@ -39,7 +40,7 @@
         <Button x:Name="eur_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,163,0,0" VerticalAlignment="Top" Width="90" Height="26" FontWeight="Bold" Background="#FFF4CF56" Click="Button_eur"/>
         <Button x:Name="usd_cvt" Content="Convert" HorizontalAlignment="Left" Margin="615,122,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_usd"/>
         <Button x:Name="mxn_cvt" Content="Convert" HorizontalAlignment="Left" Margin="616,333,0,0" VerticalAlignment="Top" Width="90" Height="25" FontWeight="Bold" Background="#FFF4CF56" Click="Button_mxn"/>
-        <Button x:Name="clear" Content="Clear and Restart" HorizontalAlignment="Left" Margin="221,376,0,0" VerticalAlignment="Top" Height="24" Width="137" Click="Button_clear"/>
+        <Button x:Name="clear" Content="Clean and Restart" HorizontalAlignment="Left" Margin="221,376,0,0" VerticalAlignment="Top" Height="24" Width="137" Click="Button_clear"/>
         <Button x:Name="go_back" Content="Go back to main menu" HorizontalAlignment="Left" Margin="569,376,0,0" VerticalAlignment="Top" Height="24" Width="137" Click="Button_go_back"/>
         <Image HorizontalAlignment="Left" Height="25" Margin="99,79,0,0" VerticalAlignment="Top" Width="25" Source="images/Image1.png"/>
         <Image HorizontalAlignment="Left" Height="25" Margin="99,331,0,0" VerticalAlignment="Top" Width="25" Source="/images/Image7.png"/>

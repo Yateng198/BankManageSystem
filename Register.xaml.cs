@@ -1,9 +1,15 @@
-﻿using System;
+﻿using BankManageSystem.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,48 +27,119 @@ namespace BankManageSystem
     /// </summary>
     public partial class Register : Window
     {
-        SqlConnection con;
+        DateTime MinimumDate = new DateTime(1900, 1, 1);
+        DateTime MaximumDate = DateTime.Today.AddYears(-18);
+        private static HttpClient client;
+
+
         public Register()
         {
             InitializeComponent();
-            con = new SqlConnection("Data Source=LAPTOP-DT6BMRBG;Initial Catalog=final;Integrated Security=True");
-            con.Open();
+            dobPicker.DisplayDateStart = MinimumDate;
+            dobPicker.DisplayDateEnd = MaximumDate;
+
 
         }
-
-        private void registe_Click(object sender, RoutedEventArgs e)
+        private async void registe_Click(object sender, RoutedEventArgs e)
         {
+            if (fname.Text == "")
+            {
+                fnamelabel.Foreground = Brushes.Red;
+                MessageBox.Show("Enter your First Name please!");
+                return;
+            }
+            if (lname.Text == "")
+            {
+                lnamelabel.Foreground = Brushes.Red;
+                MessageBox.Show("Enter your Last Name please!");
+                return;
+            }
+            if (email.Text == "")
+            {
+                emaillabel.Foreground = Brushes.Red;
+                MessageBox.Show("Enter your Email please!");
+                return;
+            }
+            if (pwd.Password.ToString() == "")
+            {
+                pwdlabel.Foreground = Brushes.Red;
+                MessageBox.Show("Enter your Password please!");
+                return;
+            }
+            if (mobile.Text == "")
+            {
+                mobilelabel.Foreground = Brushes.Red;
+                MessageBox.Show("Enter your Phone Number please!");
+                return;
+            }
+            if (postalcode.Text == "")
+            {
+                postalcodelabel.Foreground = Brushes.Red;
+                MessageBox.Show("Enter your Postal Code please!");
+                return;
+            }
+            UserInfo newUser = new UserInfo();
+            newUser.password = pwd.Password.ToString();
+            newUser.firstName = fname.Text.Trim();
+            newUser.lastName = lname.Text.Trim();
+            newUser.email = email.Text.Trim();
             try
             {
-               // DatePicker dp = new DatePicker();
-                //Open the db connection
-                string qury = "insert into customerTable values(@FName, @LName, @Dob, @Country, @PhoneNumber, @Email, @Password)";
-                SqlCommand cmd = new SqlCommand(qury, con);
-                cmd.Parameters.AddWithValue("@FName", fname.Text);//We need to call the textbox by name to grab the text in it
-                cmd.Parameters.AddWithValue("@LName", lname.Text);
-                cmd.Parameters.AddWithValue("@Dob", dobPicker.SelectedDate.Value.Date.Day);
-                cmd.Parameters.AddWithValue("@Country", country.Text);
-                cmd.Parameters.AddWithValue("@PhoneNumber", phonenumber.Text);
-                cmd.Parameters.AddWithValue("@Email", email.Text);
-                cmd.Parameters.AddWithValue("@Password", pwd.Password);
-                //we now need to excute our qury
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Registe Successfully, click ok go back to log in page!");
-                MainWindow mainWindow= new MainWindow();
+                DateTime currentDay= DateTime.Now.Date;
+                DateTime userDOB = dobPicker.SelectedDate.Value.Date;
+                TimeSpan age = currentDay - userDOB;
+                if (age.TotalDays >= 18 * 365)
+                {
+                    newUser.DOB = userDOB;
+                }
+                else
+                {
+                    MessageBox.Show("We are sorry, your age is not sufficient to open bank account yet!");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Select or enter a valide date please (yyyy-mm-dd)");
+                return;
+            }
+            newUser.phoneNumber = mobile.Text.Trim();
+            newUser.occupation = occupation.Text.Trim();
+            newUser.addressStreet = street.Text.Trim();
+            newUser.addressCity = city.Text.Trim();
+            newUser.addressProvince = province.Text.Trim();
+            newUser.addressCountry = country.Text.Trim();
+            newUser.postalCode = postalcode.Text.Trim();
+
+            client = new HttpClient();
+            HttpResponseMessage responseMessage = await client.PostAsJsonAsync("https://localhost:7026/api/UserInfo/register", newUser);
+            responseMessage.EnsureSuccessStatusCode();
+            string response = await responseMessage.Content.ReadAsStringAsync();
+
+            UserInfoResponse userInfoResponse = JsonConvert.DeserializeObject<UserInfoResponse>(response);
+            //Take out the product object from the Json response message object
+            UserInfo user = userInfoResponse.user;
+            string msg = userInfoResponse.StatusMessage;
+            int statusCode = userInfoResponse.StatusCode;
+            
+
+            if (statusCode == 200)
+            {
+                MessageBox.Show(msg);
+                MainWindow mainWindow = new MainWindow();
                 mainWindow.email.Text = this.email.Text;
                 this.Close();
                 mainWindow.Show();
-                con.Close();
             }
-            catch (SqlException ex)
+            else if(statusCode == 100)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(msg);
             }
         }
 
         private void cancel_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow= new MainWindow();
+            MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             this.Close();
         }

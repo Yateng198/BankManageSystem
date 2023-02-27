@@ -1,0 +1,17 @@
+﻿<Window x:Class="BankManageSystem.AboutUs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BankManageSystem"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        Title="AboutUs" Height="450" Width="800">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="89,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="187" Width="559"><Run Text="Nighthawk Bank of Canada ("/><Run Text="N"/><Run Text="BC; French: Banque engoulevent du Canada) is a Canadian multinational financial services company and the largest bank in Canada by market capitalization. The bank serves over 17 million clients and has more than 89,000 employees worldwide. Founded in 1864 in Halifax, Nova Scotia, it maintains a corporate headquarters in Toronto and its head office in Montreal. RBC's institution number is 003. In November 2017, N"/><Run Text="BC was added to the Financial Stability Board's list of global systemically important banks."/><LineBreak/><Run/><LineBreak/><Run Text="Today, approximately 87,000 client-focused and committed employees help us earn the right to be our clients’ first choice, differentiating us as an exceptional source of advice for the 17 million clients worldwide that we serve."/></TextBlock>
+        <Button x:Name="about_contact" Content="Contact Us" HorizontalAlignment="Left" Margin="137,318,0,0" VerticalAlignment="Top" Width="136" Click="about_contact_Click"/>
+        <Button x:Name="about_main" Content="Main Menu" HorizontalAlignment="Left" Margin="447,318,0,0" VerticalAlignment="Top" Width="136" Click="Button_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="89,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="38" Width="227" FontSize="16" FontWeight="Bold"><Run Language="en-ca" Text="Nighthawk "/><Run Text="Bank of Canada"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="89,90,0,0" TextWrapping="Wrap" Text="Personal and Commercial Banking" VerticalAlignment="Top" Width="189"/>
+
+    </Grid>
+</Window>
